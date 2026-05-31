@@ -82,14 +82,14 @@ def detect_duplicates_in_list(file_records: List[Dict[str, Any]]) -> List[Dict[s
                 is_duplicate = True
                 reason = "DUPLIKAT_NAMA_SAMA"
 
-            # Kriteria 3: Durasi sama persis (selisih < 0.5s) DAN ukuran file mirip (selisih < 0.2MB)
-            if not is_duplicate and f1_dur > 0 and f2_dur > 0:
+            # Kriteria 3: Durasi sama persis (selisih < 0.5s) DAN ukuran file mirip (selisih < 0.2MB) (minimal > 5 detik)
+            if not is_duplicate and f1_dur > 5.0 and f2_dur > 5.0:
                 if abs(f1_dur - f2_dur) < 0.5 and abs(f1_size - f2_size) < 0.2:
                     is_duplicate = True
                     reason = "DUPLIKAT_DURASI_DAN_UKURAN_SAMA"
 
-            # Kriteria 4: Fuzzy matching nama file (>90%) DAN durasi mirip (selisih <= 3 detik)
-            if not is_duplicate and f1_dur > 0 and f2_dur > 0:
+            # Kriteria 4: Fuzzy matching nama file (>90%) DAN durasi mirip (selisih <= 3 detik) (minimal > 5 detik)
+            if not is_duplicate and f1_dur > 5.0 and f2_dur > 5.0:
                 if abs(f1_dur - f2_dur) <= 3.0:
                     sim = calculate_string_similarity(f1_name, f2_name)
                     if sim >= 90.0:

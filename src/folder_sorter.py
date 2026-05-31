@@ -1,5 +1,38 @@
 import os
+import re
 from typing import Dict, Any, Tuple
+
+def is_likely_english_text(text: str) -> bool:
+    """Mendeteksi apakah teks kemungkinan besar berbahasa Inggris berdasarkan kata kunci umum."""
+    if not text:
+        return False
+        
+    # Bersihkan teks dari karakter non-alfabet
+    words = set(re.sub(r'[^a-zA-Z\s]', '', text.lower()).split())
+    
+    # Kata-kata bahasa Inggris yang sangat umum (stopwords)
+    english_stopwords = {
+        "the", "you", "me", "i", "love", "my", "your", "it", "on", "to", "for", "with", 
+        "is", "are", "am", "was", "were", "that", "this", "have", "has", "had", "dont", "cant",
+        "of", "in", "at", "by", "about", "we", "he", "she", "they", "them", "his", "her",
+        "go", "come", "do", "will", "would", "should", "could", "all", "no", "yes", "not",
+        "up", "down", "out", "so", "workout", "instrumental", "sound", "track", "music", "song"
+    }
+    
+    # Kata-kata bahasa Indonesia yang sangat umum dan khas
+    indonesian_stopwords = {
+        "yang", "dan", "di", "ke", "dari", "untuk", "dengan", "pada", "oleh", "ini", "itu",
+        "aku", "kamu", "dia", "mereka", "kita", "kami", "kau", "cinta", "hati", "jiwa", "rindu",
+        "kasih", "sayang", "jangan", "bisa", "ada", "tidak", "ya", "sudah", "belum", "adalah"
+    }
+    
+    english_count = len(words.intersection(english_stopwords))
+    indonesian_count = len(words.intersection(indonesian_stopwords))
+    
+    # Jika mengandung kata Inggris lebih banyak dan tidak didominasi kata Indonesia
+    if english_count > 0 and english_count >= indonesian_count:
+        return True
+    return False
 
 def determine_target_folder(
     filename: str,
@@ -106,5 +139,20 @@ def determine_target_folder(
     if is_ambiguous:
         return needs_review, f"File ambigu: {reason_ambiguous}"
     else:
+        # Ambil folder internasional default
+        default_international = mapping_config.get("default_international_folder", "03_MUSIK_BARAT_INTERNASIONAL/Pop_Barat")
+        
+        # Cek apakah lagu ini lagu internasional/Barat berdasarkan teks (judul/artis)
+        text_to_check = ""
+        if title_tag:
+            text_to_check += " " + title_tag
+        if artist_tag:
+            text_to_check += " " + artist_tag
+        if not text_to_check.strip():
+            text_to_check = filename_lower
+            
+        if is_likely_english_text(text_to_check):
+            return default_international, "Terdeteksi kemungkinan besar lagu internasional (bahasa Inggris)"
+            
         # Jika file memiliki pola Artist - Title yang jelas atau metadata yang valid, default masuk Pop Indonesia
-        return default_music, "Fallback default musik (pola Artis - Judul jelas atau metadata valid)"
+        return default_music, "Fallback default musik Indonesia (pola Artis - Judul jelas atau metadata valid)"
