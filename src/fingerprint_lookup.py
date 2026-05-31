@@ -26,8 +26,14 @@ from src.report_writer import write_csv_report, convert_csv_to_xlsx
 
 logger = logging.getLogger("RADIO_MUSIC_CLEANER")
 
-# API Key default stasiun radio SBL-FM untuk AcoustID
-_ACOUSTID_CLIENT_API_KEY = "8XaBELxH5O"
+def get_acoustid_api_key() -> str:
+    """Mengambil AcoustID Client API Key dari Environment Variable atau file konfigurasi."""
+    cfg = load_json_config("config/acoustid_settings.json", {})
+    return (
+        os.environ.get("ACOUSTID_API_KEY")
+        or cfg.get("client_api_key")
+        or "8XaBELxH5O"  # Fallback default SBL-FM API key
+    )
 
 
 def find_fpcalc_executable() -> Optional[str]:
@@ -119,7 +125,7 @@ def lookup_acoustid(duration: float, fingerprint: str) -> Optional[Dict[str, Any
     
     # Susun data POST (recordings+releases untuk meta lengkap)
     post_data = {
-        "client": _ACOUSTID_CLIENT_API_KEY,
+        "client": get_acoustid_api_key(),
         "meta": "recordings releases",
         "duration": int(duration),
         "fingerprint": fingerprint

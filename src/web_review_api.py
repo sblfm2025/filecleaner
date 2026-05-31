@@ -18,9 +18,16 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from typing import Dict, Any, List, Tuple
 
 # Import modular keselamatan data
-from src.utils import load_json_config, setup_logger
+from src.utils import load_json_config, setup_logger, import_module_by_path
 from src.rollback_manager import execute_rollback_for_file
-from scripts.11_apply_approved_changes import apply_approved_changes
+from src.review_queue import REVIEW_COLUMNS
+from src.report_writer import write_csv_report, convert_csv_to_xlsx
+
+# Impor dinamis untuk menghindari syntax error modul numerik
+apply_approved_changes = import_module_by_path(
+    "apply_approved_changes", 
+    "scripts/11_apply_approved_changes.py"
+).apply_approved_changes
 
 logger = logging.getLogger("RADIO_MUSIC_CLEANER")
 

@@ -26,6 +26,7 @@ from src.naming_template_engine import format_filename_by_template
 from src.operation_log import log_operation
 from src.rollback_manager import write_to_rollback_manifest
 from src.report_writer import write_csv_report, convert_csv_to_xlsx
+from src.review_queue import REVIEW_COLUMNS
 
 logger = logging.getLogger("RADIO_MUSIC_CLEANER")
 
