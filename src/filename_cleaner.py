@@ -70,7 +70,26 @@ def clean_filename(
     forbidden_chars = rules.get("windows_forbidden_chars", ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"])
     max_length = rules.get("max_filename_length", 180)
 
-    # 2. Ganti karakter berdasarkan replace_chars
+    # 2. Deteksi & Hapus Nama Situs / URL (Domain) secara dinamis
+    domain_pattern = r'\b(?:www\.)?[a-zA-Z0-9\-]+\.(?:com|net|org|co|info|biz|cc|mobi|me|id|io|us|ca|xyz|top|site|club|app|fm)\b'
+    domains = re.findall(domain_pattern, name_part, re.IGNORECASE)
+    domain_removed = False
+    for dom in domains:
+        name_part = re.sub(re.escape(dom), '', name_part, flags=re.IGNORECASE)
+        domain_removed = True
+    if domain_removed:
+        reasons.append("Nama situs web/domain dibersihkan")
+
+    # 3. Deteksi & Hapus YouTube Video ID / Hash unik di akhir nama berkas (panjang 8-12 karakter) sebelum modifikasi karakter
+    yt_match = re.search(r'-([a-zA-Z0-9_\-]{8,12})$', name_part)
+    if yt_match:
+        video_id = yt_match.group(1)
+        # Memastikan bahwa ini adalah hash acak (campuran huruf besar, kecil, angka)
+        if sum([any(c.isupper() for c in video_id), any(c.islower() for c in video_id), any(c.isdigit() for c in video_id)]) >= 2:
+            name_part = name_part[:-(len(video_id) + 1)]
+            reasons.append("ID unik unduhan Youtube dibersihkan")
+
+    # 4. Ganti karakter berdasarkan replace_chars
     replaced = False
     for old_char, new_char in replace_chars.items():
         if old_char in name_part:
@@ -79,7 +98,7 @@ def clean_filename(
     if replaced:
         reasons.append("Karakter khusus diganti")
 
-    # 3. Proses tanda kurung () dan []
+    # 5. Proses tanda kurung () dan []
     brackets_removed = False
     # regex untuk menangkap pasangan kurung biasa () dan kurung siku [] beserta isinya
     bracket_matches = re.findall(r'([\(\[][^\)\]]*[\)\]])', name_part)
@@ -107,6 +126,14 @@ def clean_filename(
             
     if brackets_removed:
         reasons.append("Isi kurung tidak penting dihapus")
+
+    # 6. Bersihkan sisa tanda kurung kosong [] atau () dan tanda hubung menggantung
+    name_part = re.sub(r'\[\s*\]|\(\s*\)', '', name_part)
+    name_part = re.sub(r'^[\s\-\_\.\,]+|[\s\-\_\.\,]+$', '', name_part)
+    name_part = re.sub(r'\s*-\s*-+\s*', ' - ', name_part)
+
+    # Rapikan spasi setelah pembersihan dinamis
+    name_part = re.sub(r'\s+', ' ', name_part).strip()
 
     # 4. Hapus frasa kotor secara case-insensitive
     phrases_removed = False
