@@ -35,9 +35,101 @@ def check_config_files() -> bool:
             return False
     return True
 
+def interactive_menu():
+    """Menampilkan antarmuka menu interaktif yang mudah digunakan tanpa perlu mengingat perintah CLI."""
+    logger = logging.getLogger("RADIO_MUSIC_CLEANER")
+    batch_id = f"BATCH_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    
+    # Ambil konfigurasi default
+    batch_cfg = load_json_config("config/batch_settings.json", {})
+    default_input = batch_cfg.get("input_dir", "data/input")
+    input_dir = default_input
+
+    while True:
+        print("\n" + "=" * 55)
+        print("          MENU UTAMA RADIO_MUSIC_CLEANER")
+        print("=" * 55)
+        print(f" Folder Input Aktif: {input_dir}")
+        print(f" ID Batch Aktif    : {batch_id}")
+        print("-" * 55)
+        print(" 1. Ubah Folder Input Lagu")
+        print(" 2. Pindai Folder Musik & Baca Metadata (Scan)")
+        print(" 3. Lihat Simulasi Pembersihan Nama Berkas (Preview)")
+        print(" 4. Jalankan Audit Mode Aman (Scan + Preview + Duplikat + QA)")
+        print(" 5. Salin & Bersihkan Nama File (Apply Rename)  *PROSES FISIK*")
+        print(" 6. Tulis Tag Metadata Dasar (Write Tags)       *PROSES FISIK*")
+        print(" 7. Susun File ke Folder Kategori (Sort)        *PROSES FISIK*")
+        print(" 8. Deteksi & Kumpulkan Berkas Duplikat (Duplicates)")
+        print(" 9. Audit Validasi Kualitas Library Akhir (Validate)")
+        print(" 10. Keluar")
+        print("=" * 55)
+        
+        choice = input("Pilih menu (1-10): ").strip()
+        
+        if choice == "1":
+            new_path = input(f"\nMasukkan path folder musik baru\n(Enter untuk batal, default: '{input_dir}'): ").strip()
+            if new_path:
+                # Bersihkan tanda kutip jika operator melakukan drag-drop folder ke terminal
+                new_path = new_path.replace('"', '').replace("'", "")
+                if os.path.exists(new_path):
+                    input_dir = new_path
+                    print(f"\n[OK] Folder input berhasil diubah ke: {input_dir}")
+                else:
+                    print(f"\n[ERROR] Folder '{new_path}' tidak ditemukan di disk!")
+        elif choice == "2":
+            run_full_pipeline(batch_id=batch_id, input_dir=input_dir, run_scan=True)
+        elif choice == "3":
+            run_full_pipeline(batch_id=batch_id, input_dir=input_dir, run_preview=True)
+        elif choice == "4":
+            run_full_pipeline(batch_id=batch_id, input_dir=input_dir, run_scan=True, run_preview=True, run_duplicates=True, run_validate=True)
+        elif choice == "5":
+            print("\n" + "!" * 55)
+            print("PERINGATAN: ANDA AKAN MENYALIN & MERAPIKAN NAMA BERKAS!")
+            print("File asli Anda dijamin tetap aman dan tidak akan diubah.")
+            print("!" * 55)
+            confirm = input("Ketik YES untuk melanjutkan proses: ").strip()
+            if confirm == "YES":
+                run_full_pipeline(batch_id=batch_id, input_dir=input_dir, run_apply=True)
+            else:
+                print("Operasi dibatalkan.")
+        elif choice == "6":
+            print("\n" + "!" * 55)
+            print("PERINGATAN: TAG METADATA AKAN DITULIS KE FILE HASIL SALINAN!")
+            print("!" * 55)
+            confirm = input("Ketik YES untuk melanjutkan proses: ").strip()
+            if confirm == "YES":
+                run_full_pipeline(batch_id=batch_id, input_dir=input_dir, run_metadata=True)
+            else:
+                print("Operasi dibatalkan.")
+        elif choice == "7":
+            print("\n" + "!" * 55)
+            print("PERINGATAN: BERKAS AKAN DISUSUN KE FOLDER KATEGORI RADIO!")
+            print("!" * 55)
+            confirm = input("Ketik YES untuk melanjutkan proses: ").strip()
+            if confirm == "YES":
+                run_full_pipeline(batch_id=batch_id, input_dir=input_dir, run_sort=True)
+            else:
+                print("Operasi dibatalkan.")
+        elif choice == "8":
+            run_full_pipeline(batch_id=batch_id, input_dir=input_dir, run_duplicates=True)
+        elif choice == "9":
+            run_full_pipeline(batch_id=batch_id, input_dir=input_dir, run_validate=True)
+        elif choice == "10":
+            print("\nTerima kasih telah menggunakan RADIO_MUSIC_CLEANER. Sampai jumpa!\n")
+            break
+        else:
+            print("\n[ERROR] Pilihan tidak valid. Silakan pilih nomor 1-10.")
+            
+        input("\nTekan ENTER untuk kembali ke Menu Utama...")
+
 def main():
     # Setup log utama
     logger = setup_logger()
+    
+    # Jika tidak ada argumen sama sekali, jalankan Menu Interaktif yang mudah dan compact
+    if len(sys.argv) == 1:
+        interactive_menu()
+        sys.exit(0)
     
     show_welcome_banner()
     
@@ -70,11 +162,6 @@ def main():
     parser.add_argument("--batch-id", type=str, default="", help="Menentukan ID batch secara manual. Jika kosong, dibuat otomatis.")
     
     args = parser.parse_args()
-    
-    # Jika tidak ada argumen sama sekali yang diberikan, tampilkan pesan bantuan
-    if not len(sys.argv) > 1:
-        parser.print_help()
-        sys.exit(0)
 
     # 3. Tentukan ID Batch
     batch_id = args.batch_id
