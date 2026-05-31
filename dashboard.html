@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SBL-FM Audio Library Classifier Dashboard v3.0</title>
+    <title>SBL-FM Audio Library Manager Dashboard v4.0</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,9 +12,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-primary: #070913;
-            --bg-secondary: rgba(15, 22, 42, 0.45);
-            --border-color: rgba(255, 255, 255, 0.06);
+            --bg-primary: #05070e;
+            --bg-secondary: rgba(10, 17, 34, 0.55);
+            --border-color: rgba(255, 255, 255, 0.05);
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --accent-cyan: #06b6d4;
@@ -23,10 +23,10 @@
             --accent-green: #10b981;
             --accent-yellow: #eab308;
             --accent-red: #ef4444;
-            --glass-bg: rgba(15, 23, 42, 0.75);
-            --glass-blur: blur(16px);
-            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            --neon-glow: 0 0 20px rgba(6, 182, 212, 0.15);
+            --glass-bg: rgba(10, 16, 30, 0.8);
+            --glass-blur: blur(20px);
+            --card-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.6);
+            --neon-glow: 0 0 20px rgba(6, 182, 212, 0.2);
         }
 
         * {
@@ -41,30 +41,29 @@
             color: var(--text-primary);
             min-height: 100vh;
             background-image: 
-                radial-gradient(circle at 5% 10%, rgba(168, 85, 247, 0.08) 0%, transparent 35%),
-                radial-gradient(circle at 95% 90%, rgba(6, 182, 212, 0.08) 0%, transparent 35%);
+                radial-gradient(circle at 10% 15%, rgba(168, 85, 247, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 90% 85%, rgba(6, 182, 212, 0.06) 0%, transparent 40%);
             background-attachment: fixed;
-            padding-bottom: 60px;
+            padding-bottom: 80px;
         }
 
-        /* Scrollbar Styling */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, 0.01);
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.18);
         }
 
         header {
-            background-color: rgba(7, 9, 19, 0.85);
+            background-color: rgba(5, 7, 14, 0.85);
             backdrop-filter: var(--glass-blur);
             border-bottom: 1px solid var(--border-color);
             padding: 15px 40px;
@@ -83,19 +82,19 @@
         }
 
         .logo-icon {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            border-radius: 10px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
         }
 
         .logo-icon svg {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             fill: #fff;
         }
 
@@ -118,14 +117,58 @@
             margin-top: 1px;
         }
 
+        /* Status Connection Badge */
+        .conn-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+        }
+
+        .conn-live {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
+        }
+
+        .conn-offline {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .conn-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: currentColor;
+            display: inline-block;
+        }
+
+        .conn-live .conn-dot {
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
         .header-actions {
             display: flex;
+            align-items: center;
             gap: 15px;
         }
 
-        .btn-upload {
-            background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(168, 85, 247, 0.15));
-            border: 1px solid rgba(6, 182, 212, 0.4);
+        .btn {
+            border: 1px solid transparent;
             color: #fff;
             padding: 9px 18px;
             border-radius: 8px;
@@ -139,10 +182,29 @@
             backdrop-filter: var(--glass-blur);
         }
 
+        .btn-upload {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(168, 85, 247, 0.15));
+            border-color: rgba(6, 182, 212, 0.4);
+        }
+
         .btn-upload:hover {
             background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
             border-color: transparent;
             box-shadow: var(--neon-glow);
+            transform: translateY(-1.5px);
+        }
+
+        .btn-sync {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2));
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+        }
+
+        .btn-sync:hover {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            border-color: transparent;
+            color: #000;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
             transform: translateY(-1.5px);
         }
 
@@ -163,7 +225,7 @@
 
         /* Container */
         .container {
-            max-width: 1440px;
+            max-width: 1500px;
             margin: 30px auto;
             padding: 0 30px;
         }
@@ -173,7 +235,7 @@
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 24px 30px;
+            padding: 22px 30px;
             margin-bottom: 25px;
             box-shadow: var(--card-shadow);
             position: relative;
@@ -181,22 +243,11 @@
             backdrop-filter: var(--glass-blur);
         }
 
-        .welcome-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 300px;
-            height: 100%;
-            background: radial-gradient(circle, rgba(6, 182, 212, 0.08) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
         .welcome-card h2 {
             font-family: 'Outfit', sans-serif;
             font-size: 24px;
             font-weight: 800;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             background: linear-gradient(135deg, #fff, #cbd5e1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -204,49 +255,47 @@
 
         .welcome-card p {
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 13.5px;
             line-height: 1.5;
-            max-width: 900px;
+            max-width: 1000px;
         }
 
         /* Drop Zone */
         #drop-zone {
-            border: 2px dashed rgba(6, 182, 212, 0.35);
+            border: 2px dashed rgba(6, 182, 212, 0.3);
             border-radius: 16px;
-            padding: 50px 30px;
+            padding: 40px;
             text-align: center;
-            background: rgba(15, 23, 42, 0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 30px;
+            background: rgba(10, 16, 30, 0.2);
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
             cursor: pointer;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
         }
 
         #drop-zone:hover, #drop-zone.highlight {
             border-color: var(--accent-cyan);
-            background: rgba(6, 182, 212, 0.05);
-            box-shadow: var(--neon-glow), inset 0 0 10px rgba(6, 182, 212, 0.1);
+            background: rgba(6, 182, 212, 0.03);
+            box-shadow: var(--neon-glow);
         }
 
         #drop-zone svg {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             fill: var(--accent-cyan);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             opacity: 0.8;
-            filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.4));
         }
 
         #drop-zone h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         #drop-zone p {
             color: var(--text-secondary);
-            font-size: 13px;
+            font-size: 12.5px;
         }
 
         /* Stats Grid */
@@ -261,17 +310,10 @@
             background: var(--glass-bg);
             border: 1px solid var(--border-color);
             border-radius: 14px;
-            padding: 18px 20px;
+            padding: 16px 20px;
             box-shadow: var(--card-shadow);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
             backdrop-filter: var(--glass-blur);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(255, 255, 255, 0.12);
+            position: relative;
         }
 
         .stat-card p {
@@ -285,7 +327,7 @@
 
         .stat-card .value {
             font-family: 'Outfit', sans-serif;
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 900;
             line-height: 1;
         }
@@ -307,10 +349,10 @@
         .stat-confidence::after { background: var(--accent-purple); }
         .stat-conflict::after { background: var(--accent-pink); }
 
-        /* Dashboard Content Layout */
+        /* Content Layout */
         .dashboard-content {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr 1fr;
             gap: 25px;
             margin-bottom: 30px;
         }
@@ -325,32 +367,28 @@
             background: var(--glass-bg);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 24px;
+            padding: 22px;
             box-shadow: var(--card-shadow);
             backdrop-filter: var(--glass-blur);
         }
 
         .card h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             border-left: 3.5px solid var(--accent-purple);
             padding-left: 8px;
             letter-spacing: 0.5px;
         }
 
-        /* Charts Container */
         .chart-container {
             position: relative;
-            height: 260px;
+            height: 250px;
             width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        /* Table Card & Filter */
+        /* Large Table Cards */
         .table-card {
             grid-column: 1 / -1;
         }
@@ -359,7 +397,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .table-header-row {
@@ -375,42 +413,37 @@
         }
 
         .search-box {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 9px 14px;
+            padding: 8px 12px;
             color: var(--text-primary);
             font-size: 13px;
-            min-width: 240px;
+            min-width: 220px;
             outline: none;
             transition: all 0.3s ease;
         }
 
         .search-box:focus {
             border-color: var(--accent-cyan);
-            background: rgba(255, 255, 255, 0.06);
-            box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.1);
         }
 
         .filter-select {
-            background: #0f172a;
+            background: #0b0f19;
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 9px 14px;
+            padding: 8px 12px;
             color: var(--text-primary);
             font-size: 13px;
             outline: none;
             cursor: pointer;
-            transition: border-color 0.3s ease;
-        }
-
-        .filter-select:hover {
-            border-color: rgba(255, 255, 255, 0.15);
         }
 
         .table-wrapper {
             overflow-x: auto;
-            max-height: 480px;
+            max-height: 400px;
             overflow-y: auto;
             border: 1px solid var(--border-color);
             border-radius: 10px;
@@ -420,14 +453,14 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            font-size: 13px;
+            font-size: 12.5px;
         }
 
         th {
-            background-color: rgba(15, 23, 42, 0.95);
+            background-color: rgba(10, 16, 30, 0.98);
             color: var(--text-secondary);
             font-weight: 700;
-            padding: 12px 14px;
+            padding: 11px 12px;
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
@@ -435,78 +468,167 @@
         }
 
         td {
-            padding: 11px 14px;
+            padding: 10px 12px;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-primary);
-            max-width: 250px;
+            max-width: 200px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         tr:hover {
-            background-color: rgba(255, 255, 255, 0.015);
+            background-color: rgba(255, 255, 255, 0.012);
         }
 
-        /* Status Badges */
+        /* Status & Actions */
         .badge {
             display: inline-block;
-            padding: 3px 6px;
-            border-radius: 5px;
-            font-size: 10px;
+            padding: 2.5px 5px;
+            border-radius: 4px;
+            font-size: 9.5px;
             font-weight: 800;
             text-transform: uppercase;
         }
 
-        .badge-autosort {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--accent-green);
-            border: 1px solid rgba(16, 185, 129, 0.15);
+        .badge-autosort { background-color: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.15); }
+        .badge-review { background-color: rgba(234, 179, 8, 0.1); color: var(--accent-yellow); border: 1px solid rgba(234, 179, 8, 0.15); }
+        .badge-needsreview { background-color: rgba(239, 68, 68, 0.1); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.15); }
+        .badge-applied { background-color: rgba(6, 182, 212, 0.1); color: var(--accent-cyan); border: 1px solid rgba(6, 182, 212, 0.15); }
+        .badge-reject { background-color: rgba(236, 72, 153, 0.1); color: var(--accent-pink); border: 1px solid rgba(236, 72, 153, 0.15); }
+
+        .btn-action {
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
         }
 
-        .badge-review {
-            background-color: rgba(234, 179, 8, 0.1);
-            color: var(--accent-yellow);
-            border: 1px solid rgba(234, 179, 8, 0.15);
+        .btn-action-approve { background-color: rgba(16, 185, 129, 0.12); color: var(--accent-green); border-color: rgba(16, 185, 129, 0.25); }
+        .btn-action-approve:hover { background-color: var(--accent-green); color: #000; }
+        
+        .btn-action-edit { background-color: rgba(6, 182, 212, 0.12); color: var(--accent-cyan); border-color: rgba(6, 182, 212, 0.25); }
+        .btn-action-edit:hover { background-color: var(--accent-cyan); color: #000; }
+
+        .btn-action-reject { background-color: rgba(239, 68, 68, 0.12); color: var(--accent-red); border-color: rgba(239, 68, 68, 0.25); }
+        .btn-action-reject:hover { background-color: var(--accent-red); color: #fff; }
+
+        .btn-action-rollback { background-color: rgba(236, 72, 153, 0.12); color: var(--accent-pink); border-color: rgba(236, 72, 153, 0.25); }
+        .btn-action-rollback:hover { background-color: var(--accent-pink); color: #fff; }
+
+        .action-cell {
+            display: flex;
+            gap: 6px;
         }
 
-        .badge-needsreview {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: var(--accent-red);
-            border: 1px solid rgba(239, 68, 68, 0.15);
+        /* Modal Sunting */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
         }
 
-        .badge-reject {
-            background-color: rgba(236, 72, 153, 0.1);
-            color: var(--accent-pink);
-            border: 1px solid rgba(236, 72, 153, 0.15);
+        .modal-content {
+            background-color: #0b0f19;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 500px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--accent-cyan);
+        }
+
+        .close-modal {
+            color: var(--text-secondary);
+            font-size: 22px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover { color: #fff; }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 9px 12px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
         }
 
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 60px 0;
+            padding: 50px 0;
             color: var(--text-secondary);
         }
 
         .empty-state svg {
-            width: 54px;
-            height: 54px;
+            width: 50px;
+            height: 50px;
             fill: var(--text-secondary);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             opacity: 0.25;
         }
 
         .empty-state h2 {
             font-family: 'Outfit', sans-serif;
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
             color: #fff;
-            margin-bottom: 5px;
-        }
-
-        .empty-state p {
-            font-size: 13px;
+            margin-bottom: 3px;
         }
     </style>
 </head>
@@ -519,14 +641,27 @@
             </div>
             <div class="logo-text">
                 <h1>SBL-FM RADIO</h1>
-                <p>Classifier Audit Dashboard v3.0</p>
+                <p>Library Manager Dashboard v4.0</p>
             </div>
         </div>
         <div class="header-actions">
+            <!-- Status Koneksi API -->
+            <div class="conn-status conn-offline" id="status-badge">
+                <span class="conn-dot"></span>
+                <span id="status-text">OFFLINE (DRAG & DROP CSV)</span>
+            </div>
+
+            <!-- Sinkronisasi Apply Massal (Only active when live) -->
+            <button class="btn btn-sync" id="btn-apply-changes" style="display: none;" onclick="triggerApplyChanges()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Jalankan Modifikasi Fisik
+            </button>
+
+            <!-- Unggah manual CSV -->
             <div class="upload-btn-wrapper">
-                <button class="btn-upload">
+                <button class="btn btn-upload">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    Unggah Laporan Klasifikasi
+                    Unggah CSV Manual
                 </button>
                 <input type="file" id="csv-file-input" accept=".csv" />
             </div>
@@ -537,35 +672,35 @@
         
         <!-- Welcome Card -->
         <div class="welcome-card">
-            <h2>Portal Audit Klasifikasi & Sorting Radio</h2>
-            <p>Portal visualisasi real-time berbasis confidence score stasiun radio profesional. Unggah berkas laporan <code>audio_scan_report.csv</code>, <code>folder_sorting_report.csv</code>, atau <code>classification_report.csv</code> dari direktori <code>data/logs/</code> Anda untuk melakukan audit interaktif terhadap keputusan model, konflik metadata, dan tipe alokasi media.</p>
+            <h2>Portal Validasi & Tinjauan Perpustakaan Lagu v4.0</h2>
+            <p>Pusat kendali stasiun radio terpadu untuk menyelaraskan alur kerja klasifikasi. Anda dapat meninjau langsung data sidik jari AcoustID, usulan metadata resmi MusicBrainz, menyunting tag lagu secara visual, mengeksekusi sinkronisasi fisik massal, dan memulihkan berkas aman lewat log operasi rollback.</p>
         </div>
 
-        <!-- Drop Zone -->
+        <!-- Drop Zone (Hanya muncul jika offline) -->
         <div id="drop-zone">
             <svg viewBox="0 0 24 24">
                 <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
             </svg>
-            <h3>Tarik & Lepaskan File CSV Laporan Klasifikasi Di Sini</h3>
-            <p>Atau klik area ini untuk memindai dokumen dari komputer Anda secara manual</p>
+            <h3>Tarik & Lepaskan File CSV Laporan Di Sini</h3>
+            <p>Tarik file <code>review_queue.csv</code>, <code>metadata_suggestions.csv</code>, atau <code>operation_log.csv</code> Anda</p>
         </div>
 
-        <!-- Stats Grid (Hidden initially) -->
+        <!-- Stats Grid -->
         <div class="stats-grid" id="stats-area" style="display: none;">
             <div class="stat-card stat-total">
                 <p>Total Berkas</p>
                 <div class="value" id="val-total">0</div>
             </div>
             <div class="stat-card stat-ok">
-                <p>Auto Sorted (Lolos)</p>
+                <p>APPROVED / AUTO</p>
                 <div class="value" id="val-ok">0</div>
             </div>
             <div class="stat-card stat-review">
-                <p>Review (Perlu Cek)</p>
+                <p>PENDING REVIEW</p>
                 <div class="value" id="val-review">0</div>
             </div>
             <div class="stat-card stat-error">
-                <p>Rejected (Bad Audio)</p>
+                <p>REJECTED / BAD</p>
                 <div class="value" id="val-error">0</div>
             </div>
             <div class="stat-card stat-confidence">
@@ -578,12 +713,12 @@
             </div>
         </div>
 
-        <!-- Dashboard Content Grid (Hidden initially) -->
+        <!-- Dashboard Content Grid -->
         <div class="dashboard-content" id="dashboard-main-content" style="display: none;">
             
-            <!-- Chart Keputusan Classifier -->
+            <!-- Chart Keputusan -->
             <div class="card">
-                <h3>Distribusi Keputusan Classifier</h3>
+                <h3>Analisis Status Antrean Tinjauan</h3>
                 <div class="chart-container">
                     <canvas id="decisionChart"></canvas>
                 </div>
@@ -591,43 +726,28 @@
 
             <!-- Chart Tipe Media -->
             <div class="card">
-                <h3>Distribusi Tipe Media (Radio Assets)</h3>
+                <h3>Alokasi Tipe Aset Media</h3>
                 <div class="chart-container">
                     <canvas id="mediaChart"></canvas>
                 </div>
             </div>
 
-            <!-- Chart Folder Tujuan -->
-            <div class="card">
-                <h3>5 Folder Master Terpopuler</h3>
-                <div class="chart-container">
-                    <canvas id="folderChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Chart Alasan Utama Masuk Review -->
-            <div class="card">
-                <h3>Penyebab Terbanyak File Masuk Review</h3>
-                <div class="chart-container">
-                    <canvas id="reasonChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Table Card -->
+            <!-- TABLE 1: Antrean Tinjauan Operator (Review Queue) -->
             <div class="card table-card">
                 <div class="table-actions">
                     <div class="table-header-row">
-                        <h3>Daftar Audit Berkas Audio v3.0</h3>
+                        <h3>Antrean Tinjauan Berkas Lagu (Review Queue)</h3>
                     </div>
                     <div class="filter-row">
-                        <input type="text" class="search-box" id="search-input" placeholder="Cari Artis, Judul, File, atau Folder...">
+                        <input type="text" class="search-box" id="search-input" placeholder="Cari Lagu, Artis, Folder...">
                         
-                        <select class="filter-select" id="decision-filter">
-                            <option value="ALL">Semua Keputusan</option>
-                            <option value="AUTO_SORT">AUTO_SORT</option>
-                            <option value="REVIEW_WITH_SUGGESTION">REVIEW_WITH_SUGGESTION</option>
-                            <option value="NEEDS_REVIEW">NEEDS_REVIEW</option>
-                            <option value="REJECT_BAD_AUDIO">REJECT_BAD_AUDIO</option>
+                        <select class="filter-select" id="status-filter">
+                            <option value="ALL">Semua Status</option>
+                            <option value="PENDING_REVIEW">PENDING_REVIEW (Tinjau)</option>
+                            <option value="APPROVED">APPROVED (Setuju)</option>
+                            <option value="EDITED">EDITED (Disunting)</option>
+                            <option value="REJECTED">REJECTED (Ditolak)</option>
+                            <option value="APPLIED">APPLIED (Telah Ditulis)</option>
                         </select>
 
                         <select class="filter-select" id="media-filter">
@@ -636,21 +756,6 @@
                             <option value="LOCAL_REGIONAL_MUSIC">LOCAL_REGIONAL_MUSIC</option>
                             <option value="INTERNATIONAL_MUSIC">INTERNATIONAL_MUSIC</option>
                             <option value="RELIGIOUS_MUSIC">RELIGIOUS_MUSIC</option>
-                            <option value="RADIO_ASSET">RADIO_ASSET</option>
-                            <option value="COMMERCIAL_AD">COMMERCIAL_AD</option>
-                            <option value="PUBLIC_SERVICE">PUBLIC_SERVICE (ILM)</option>
-                            <option value="INSTRUMENTAL_BED">INSTRUMENTAL_BED</option>
-                            <option value="PROGRAM_RECORDING">PROGRAM_RECORDING</option>
-                        </select>
-
-                        <select class="filter-select" id="conflict-filter">
-                            <option value="ALL">Semua Konflik</option>
-                            <option value="YES">Ada Konflik</option>
-                            <option value="NO">Tanpa Konflik</option>
-                            <option value="METADATA_FILENAME_CONFLICT">Konflik Tag vs File</option>
-                            <option value="DURATION_CATEGORY_CONFLICT">Konflik Durasi</option>
-                            <option value="AMBIGUOUS_FILENAME">Nama File Ambigu</option>
-                            <option value="DANGEROUS_KEYWORD_PRESENT">Keyword Berbahaya</option>
                         </select>
                     </div>
                 </div>
@@ -658,17 +763,42 @@
                     <table id="audit-table">
                         <thead>
                             <tr>
-                                <th>File Name / Path</th>
-                                <th>Media Type</th>
-                                <th>Conf</th>
-                                <th>Decision</th>
-                                <th>Target / Review Folder</th>
-                                <th>Conflicts / Warnings</th>
-                                <th>Alasan Rinci</th>
+                                <th>Filename</th>
+                                <th>Current Meta</th>
+                                <th>Suggested Meta</th>
+                                <th>Folder Suggestion</th>
+                                <th>Status</th>
+                                <th>Review Reason</th>
+                                <th>Aksi Operator</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">
-                            <!-- Baris dimuat secara dinamis via JavaScript -->
+                            <!-- Rows loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TABLE 2: Laporan Audit Log Operasi Keselamatan (Only when Live backend) -->
+            <div class="card table-card" id="logs-card" style="display: none;">
+                <div class="table-actions">
+                    <h3>Riwayat Log Operasi & Pemulihan (Rollback Manager)</h3>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Operation ID</th>
+                                <th>Waktu</th>
+                                <th>Tipe Operasi</th>
+                                <th>File Asli</th>
+                                <th>File Hasil Bersih</th>
+                                <th>Jalur Tujuan Master</th>
+                                <th>Pemulihan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-table-body">
+                            <!-- Operation logs loaded dynamically -->
                         </tbody>
                     </table>
                 </div>
@@ -681,23 +811,269 @@
             <svg viewBox="0 0 24 24">
                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2zm0-4H7V7h10v2zm0 8H7v-2h10v2z"/>
             </svg>
-            <h2>Belum Ada Laporan Klasifikasi yang Dimuat</h2>
-            <p>Silakan seret file CSV dari direktori <code>data/logs/</code> Anda ke area di atas untuk memulai analisis.</p>
+            <h2>Belum Ada Laporan yang Dimuat</h2>
+            <p>Silakan nyalakan <code>python -m src.web_review_api</code> untuk visual live, atau seret file CSV dari folder logs Anda ke sini.</p>
         </div>
 
+    </div>
+
+    <!-- Modal Sunting Metadata -->
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modal-title">Sunting Metadata Lagu</h4>
+                <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            </div>
+            <input type="hidden" id="edit-file-id">
+            <div class="form-group">
+                <label>Penyanyi (Artist)</label>
+                <input type="text" class="form-input" id="edit-artist">
+            </div>
+            <div class="form-group">
+                <label>Judul Lagu (Title)</label>
+                <input type="text" class="form-input" id="edit-title">
+            </div>
+            <div class="form-group">
+                <label>Nama Album (Album)</label>
+                <input type="text" class="form-input" id="edit-album">
+            </div>
+            <div class="form-group">
+                <label>Tahun Rilis (Year)</label>
+                <input type="text" class="form-input" id="edit-year">
+            </div>
+            <div class="form-group">
+                <label>Usulan Folder Tujuan (Target Folder)</label>
+                <input type="text" class="form-input" id="edit-folder">
+            </div>
+            <div class="form-group">
+                <label>Catatan Operator</label>
+                <input type="text" class="form-input" id="edit-notes" placeholder="Tulis catatan suntingan...">
+            </div>
+            <div class="modal-footer">
+                <button class="btn-action btn-action-reject" onclick="closeEditModal()">Batal</button>
+                <button class="btn-action btn-action-approve" onclick="saveEditMetadata()">Simpan Perubahan</button>
+            </div>
+        </div>
     </div>
 
     <script>
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('csv-file-input');
         
-        let allData = []; // Menyimpan data mentah
+        let allData = []; // Data review queue
+        let isLiveAPI = false;
         let decisionChart = null;
         let mediaChart = null;
-        let folderChart = null;
-        let reasonChart = null;
 
-        // Drag & drop event listeners
+        // Coba hubungkan ke API Backend lokal stasiun radio
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAPIConnection();
+        });
+
+        function checkAPIConnection() {
+            fetch('http://localhost:8000/api/queue')
+                .then(res => {
+                    if (res.ok) return res.json();
+                    throw new Error("HTTP error");
+                })
+                .then(data => {
+                    // API Terhubung!
+                    isLiveAPI = true;
+                    const badge = document.getElementById('status-badge');
+                    badge.className = 'conn-status conn-live';
+                    document.getElementById('status-text').innerText = 'TERHUBUNG (LIVE API)';
+                    document.getElementById('drop-zone').style.display = 'none';
+                    document.getElementById('btn-apply-changes').style.display = 'flex';
+                    document.getElementById('logs-card').style.display = 'block';
+                    
+                    buildDashboard(data);
+                    loadOperationLogs();
+                })
+                .catch(err => {
+                    // API Mati/Offline, gunakan mode drag-drop csv bawaan v3.0
+                    logger_log("Menggunakan mode berkas offline (drag & drop).");
+                });
+        }
+
+        function logger_log(msg) {
+            console.log(`[DASHBOARD] ${msg}`);
+        }
+
+        function loadOperationLogs() {
+            if (!isLiveAPI) return;
+            fetch('http://localhost:8000/api/logs')
+                .then(res => res.json())
+                .then(logs => {
+                    renderLogsTable(logs);
+                });
+        }
+
+        function renderLogsTable(logs) {
+            const tbody = document.getElementById('logs-table-body');
+            tbody.innerHTML = '';
+
+            if (logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 15px;">Belum ada log operasi tercatat di disk.</td></tr>';
+                return;
+            }
+
+            // Batasi 20 log operasi terakhir untuk performa
+            logs.reverse().slice(0, 20).forEach(row => {
+                const tr = document.createElement('tr');
+                const opId = row.operation_id || '';
+                const time = row.timestamp ? row.timestamp.split('T')[0] : '';
+                const type = row.operation_type || 'COPY_RENAME';
+                const oldName = row.old_filename || '';
+                const newName = row.new_filename || '';
+                const path = row.target_path ? os_basename_simple(row.target_path) : '';
+                const isRollbackActive = row.rollback_available === 'YES' && row.rollback_available !== 'ROLLED_BACK';
+
+                let rollbackBtn = '';
+                if (row.rollback_available === 'ROLLED_BACK') {
+                    rollbackBtn = '<span style="color: var(--text-secondary); font-style: italic;">Rolled Back</span>';
+                } else if (isRollbackActive) {
+                    rollbackBtn = `<button class="btn-action btn-action-rollback" onclick="triggerRollback('${opId}')">Rollback</button>`;
+                } else {
+                    rollbackBtn = '<span style="color: var(--text-secondary); opacity: 0.5;">None</span>';
+                }
+
+                tr.innerHTML = `
+                    <td><code>${opId}</code></td>
+                    <td>${time}</td>
+                    <td><code>${type}</code></td>
+                    <td title="${oldName}">${oldName}</td>
+                    <td title="${newName}"><strong>${newName}</strong></td>
+                    <td title="${row.target_path}"><code>${path}</code></td>
+                    <td>${rollbackBtn}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function os_basename_simple(path) {
+            return path.split(/[/\\]/).pop();
+        }
+
+        // POST API Action: Approve / Reject
+        function triggerAPIAction(fileId, action, extra = {}) {
+            if (!isLiveAPI) {
+                // Mode offline: update data di memori
+                allData.forEach(row => {
+                    if (row.file_id === fileId) {
+                        row.status = action;
+                        row.operator_decision = action;
+                        if (action === 'EDITED') {
+                            Object.assign(row, extra);
+                        }
+                    }
+                });
+                buildDashboard(allData);
+                return;
+            }
+
+            const body = { file_id: fileId, action: action, ...extra };
+            fetch('http://localhost:8000/api/action', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: json_stringify_custom(body)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status === 'success') {
+                    checkAPIConnection(); // Refresh data
+                } else {
+                    alert(res.message);
+                }
+            });
+        }
+
+        function json_stringify_custom(obj) {
+            return JSON.stringify(obj);
+        }
+
+        // POST API: Apply Approved Changes
+        function triggerApplyChanges() {
+            if (!isLiveAPI) return;
+            const btn = document.getElementById('btn-apply-changes');
+            btn.disabled = true;
+            btn.innerText = 'Menyinkronkan File...';
+
+            fetch('http://localhost:8000/api/apply', { method: 'POST' })
+                .then(res => res.json())
+                .then(res => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Jalankan Modifikasi Fisik';
+                    
+                    if (res.status === 'success') {
+                        alert(
+                            `Sinkronisasi Fisik Selesai!\n` +
+                            `- Sukses di-apply : ${res.success_count} file\n` +
+                            `- Gagal di-apply  : ${res.failed_count} file`
+                        );
+                        checkAPIConnection(); // Refresh data
+                    } else {
+                        alert(`Gagal sinkronisasi: ${res.message}`);
+                    }
+                });
+        }
+
+        // POST API: Rollback
+        function triggerRollback(opId) {
+            if (!isLiveAPI) return;
+            if (!confirm(`Apakah Anda yakin ingin memulihkan (rollback) operasi ${opId}?\nFile akan dikembalikan ke nama dan tag aslinya.`)) return;
+
+            fetch('http://localhost:8000/api/rollback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: json_stringify_custom({ operation_id: opId })
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status === 'success') {
+                    alert(res.message);
+                    checkAPIConnection(); // Refresh data
+                } else {
+                    alert(`Gagal rollback: ${res.message}`);
+                }
+            });
+        }
+
+        // Modal Edit Controls
+        function openEditModal(fileId) {
+            const row = allData.find(x => x.file_id === fileId);
+            if (!row) return;
+
+            document.getElementById('edit-file-id').value = fileId;
+            document.getElementById('edit-artist').value = row.suggested_artist || row.current_artist || '';
+            document.getElementById('edit-title').value = row.suggested_title || row.current_title || '';
+            document.getElementById('edit-album').value = row.suggested_album || '';
+            document.getElementById('edit-year').value = row.suggested_year || '';
+            document.getElementById('edit-folder').value = row.target_folder_suggestion || '';
+            document.getElementById('edit-notes').value = row.operator_notes || '';
+
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+        }
+
+        function saveEditMetadata() {
+            const fileId = document.getElementById('edit-file-id').value;
+            const extra = {
+                suggested_artist: document.getElementById('edit-artist').value,
+                suggested_title: document.getElementById('edit-title').value,
+                suggested_album: document.getElementById('edit-album').value,
+                suggested_year: document.getElementById('edit-year').value,
+                target_folder_suggestion: document.getElementById('edit-folder').value,
+                operator_notes: document.getElementById('edit-notes').value
+            };
+
+            triggerAPIAction(fileId, 'EDITED', extra);
+            closeEditModal();
+        }
+
+        // Drag & drop offline setup
         ['dragenter', 'dragover'].forEach(eventName => {
             dropZone.addEventListener(eventName, highlight, false);
         });
@@ -737,7 +1113,7 @@
 
         function processFile(file) {
             if (!file.name.endsWith('.csv')) {
-                alert('Tolong unggah berkas berformat CSV hasil keluaran dari SBL-FM Filecleaner.');
+                alert('Tolong unggah berkas berformat CSV.');
                 return;
             }
 
@@ -810,33 +1186,28 @@
             document.getElementById('stats-area').style.display = 'grid';
             document.getElementById('dashboard-main-content').style.display = 'grid';
 
-            // 1. Kalkulasi Statistik Atas
+            // Hitung statistik
             const total = data.length;
             
-            let autoSortedCount = 0;
-            let reviewCount = 0;
-            let rejectCount = 0;
+            let approvedCount = 0;
+            let pendingCount = 0;
+            let rejectedCount = 0;
             
             let totalConfidence = 0;
             let confidenceCounter = 0;
             let totalConflicts = 0;
 
             data.forEach(row => {
-                // Mapping decision v3.0
-                const decision = (row.decision || row.classification_decision || '').toUpperCase();
+                const status = (row.status || '').toUpperCase();
                 
-                if (decision === 'AUTO_SORT') {
-                    autoSortedCount++;
-                } else if (decision === 'REVIEW_WITH_SUGGESTION' || decision === 'NEEDS_REVIEW') {
-                    reviewCount++;
-                } else if (decision === 'REJECT_BAD_AUDIO') {
-                    rejectCount++;
+                if (status === 'APPROVED' || status === 'APPLIED') {
+                    approvedCount++;
+                } else if (status === 'PENDING_REVIEW' || status === 'EDITED') {
+                    pendingCount++;
+                } else if (status === 'REJECTED') {
+                    rejectedCount++;
                 } else {
-                    // Fallback status lama
-                    const status = (row.status || '').toUpperCase();
-                    if (status === 'OK' || status === 'SUCCESS') autoSortedCount++;
-                    else if (status === 'PERLU_DICEK' || status === 'SKIPPED') reviewCount++;
-                    else rejectCount++;
+                    pendingCount++;
                 }
 
                 // Confidence score
@@ -850,27 +1221,27 @@
                 }
 
                 // Deteksi Konflik
-                const conflicts = row.conflicts || '';
-                if (conflicts && conflicts.toUpperCase() !== 'NONE' && conflicts !== '()') {
-                    totalConflicts += conflicts.split(';').length;
+                const reason = (row.review_reason || '').toLowerCase();
+                if (reason.includes('konflik') || reason.includes('conflict')) {
+                    totalConflicts++;
                 }
             });
 
-            const avgConfidence = confidenceCounter > 0 ? Math.round(totalConfidence / confidenceCounter) : 0;
+            const avgConfidence = confidenceCounter > 0 ? Math.round(totalConfidence / confidenceCounter) : 100;
 
-            // Tulis nilai ke DOM
+            // DOM Updates
             document.getElementById('val-total').innerText = total;
-            document.getElementById('val-ok').innerText = autoSortedCount;
-            document.getElementById('val-review').innerText = reviewCount;
-            document.getElementById('val-error').innerText = rejectCount;
+            document.getElementById('val-ok').innerText = approvedCount;
+            document.getElementById('val-review').innerText = pendingCount;
+            document.getElementById('val-error').innerText = rejectedCount;
             document.getElementById('val-confidence').innerText = `${avgConfidence}%`;
             document.getElementById('val-conflict').innerText = totalConflicts;
 
-            // Load data ke tabel
+            // Muat tabel
             renderTable(data);
 
-            // Buat Grafik Visual
-            renderCharts(data, autoSortedCount, reviewCount, rejectCount);
+            // Buat Charts
+            renderCharts(approvedCount, pendingCount, rejectedCount, data);
         }
 
         function renderTable(data) {
@@ -885,91 +1256,105 @@
             data.forEach(row => {
                 const tr = document.createElement('tr');
                 
-                const filename = row.filename || row.clean_filename_suggestion || os_basename(row.source_path || row.file_path || '');
+                const fileId = row.file_id || '';
+                const filename = row.filename || os_basename_simple(row.file_path || '');
                 const mediaType = row.media_type || 'MUSIC';
-                const confidence = row.confidence_score || row.confidence || '0';
-                const decision = (row.decision || row.classification_decision || 'NEEDS_REVIEW').toUpperCase();
+                const confidence = row.confidence_score || '0';
                 
-                // Target folder routing
-                const targetFolder = row.target_folder || row.suggested_target_folder || row.review_folder || row.sorted_folder || '90_NEEDS_REVIEW/LOW_CONFIDENCE_MUSIC';
-                
-                // Badge keputusan
-                let decBadge = '';
-                if (decision === 'AUTO_SORT') {
-                    decBadge = '<span class="badge badge-autosort">Auto Sorted</span>';
-                } else if (decision === 'REVIEW_WITH_SUGGESTION') {
-                    decBadge = '<span class="badge badge-review">Saran Review</span>';
-                } else if (decision === 'REJECT_BAD_AUDIO') {
-                    decBadge = '<span class="badge badge-reject">Rejected</span>';
+                const curArtist = row.current_artist || '-';
+                const curTitle = row.current_title || '-';
+                const sugArtist = row.suggested_artist || '';
+                const sugTitle = row.suggested_title || '';
+                const sugAlbum = row.suggested_album || '';
+                const sugYear = row.suggested_year || '';
+
+                const targetFolder = row.target_folder_suggestion || 'Unknown';
+                const reviewReason = row.review_reason || 'Pemeriksaan rutin stasiun radio';
+                const status = (row.status || 'PENDING_REVIEW').toUpperCase();
+
+                // Status Badge
+                let statusBadge = '';
+                if (status === 'APPROVED') {
+                    statusBadge = '<span class="badge badge-autosort">Approved</span>';
+                } else if (status === 'EDITED') {
+                    statusBadge = '<span class="badge badge-review">Edited</span>';
+                } else if (status === 'APPLIED') {
+                    statusBadge = '<span class="badge badge-applied">Applied</span>';
+                } else if (status === 'REJECTED') {
+                    statusBadge = '<span class="badge badge-reject">Rejected</span>';
                 } else {
-                    decBadge = '<span class="badge badge-needsreview">Needs Review</span>';
+                    statusBadge = '<span class="badge badge-needsreview">Pending</span>';
                 }
 
-                // Konflik / Peringatan
-                const conflicts = row.conflicts || '';
-                const warnings = row.warnings || row.warnings_summary || '';
-                let conflictText = '';
-                if (conflicts && conflicts.toUpperCase() !== 'NONE') {
-                    conflictText = `<span style="color: var(--accent-pink); font-weight:700;">[KONFLIK] ${conflicts}</span>`;
+                // Perbandingan Metadata
+                let currentMetaText = `<span style="opacity: 0.85;">${curArtist}</span><br><span style="opacity: 0.6; font-size:11px;">${curTitle}</span>`;
+                let suggestedMetaText = '<span style="color: var(--text-secondary); font-style:italic;">(Tidak ada usulan)</span>';
+                
+                if (sugArtist || sugTitle) {
+                    suggestedMetaText = `<strong>${sugArtist}</strong><br><span style="color: var(--accent-cyan); font-size:11px;">${sugTitle}</span>`;
+                    if (sugAlbum || sugYear) {
+                        suggestedMetaText += `<br><span style="opacity: 0.5; font-size:10px;">${sugAlbum} (${sugYear})</span>`;
+                    }
                 }
-                if (warnings && warnings.toUpperCase() !== 'NONE') {
-                    if (conflictText) conflictText += ' | ';
-                    conflictText += `<span style="color: var(--accent-yellow);">${warnings}</span>`;
-                }
-                if (!conflictText) conflictText = '<span style="color: var(--text-secondary); opacity: 0.5;">Aman</span>';
 
-                // Alasan rincian
-                const reason = row.classification_reason || row.classifier_reason || row.reason || row.notes || row.change_reason || '-';
+                // Aksi Operator Buttons
+                let actionButtons = '';
+                if (status !== 'APPLIED') {
+                    actionButtons = `
+                        <div class="action-cell">
+                            <button class="btn-action btn-action-approve" onclick="triggerAPIAction('${fileId}', 'APPROVED')">Approve</button>
+                            <button class="btn-action btn-action-edit" onclick="openEditModal('${fileId}')">Edit</button>
+                            <button class="btn-action btn-action-reject" onclick="triggerAPIAction('${fileId}', 'REJECTED')">Reject</button>
+                        </div>
+                    `;
+                } else {
+                    actionButtons = '<span style="color: var(--accent-green); font-weight:700;">Applied</span>';
+                }
 
                 tr.innerHTML = `
-                    <td title="${filename}"><strong>${filename}</strong></td>
-                    <td><code>${mediaType}</code></td>
-                    <td style="font-weight: 700; color: ${confidence >= 85 ? 'var(--accent-green)' : (confidence >= 60 ? 'var(--accent-yellow)' : 'var(--accent-red)')}">${confidence}%</td>
-                    <td>${decBadge}</td>
+                    <td title="${filename}"><strong>${filename}</strong><br><span style="opacity:0.4; font-size:10px;">${fileId}</span></td>
+                    <td>${currentMetaText}</td>
+                    <td>${suggestedMetaText}</td>
                     <td title="${targetFolder}"><code>${targetFolder}</code></td>
-                    <td title="${conflicts || warnings}">${conflictText}</td>
-                    <td title="${reason}">${reason}</td>
+                    <td>${statusBadge}</td>
+                    <td title="${reviewReason}" style="color: ${reviewReason.includes('Konflik') ? 'var(--accent-pink)' : 'var(--text-primary)'}">${reviewReason}</td>
+                    <td>${actionButtons}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function os_basename(path) {
-            return path.split(/[/\\]/).pop();
-        }
-
         // Advanced Filter & Search
         const searchInput = document.getElementById('search-input');
-        const decisionFilter = document.getElementById('decision-filter');
+        const statusFilter = document.getElementById('status-filter');
         const mediaFilter = document.getElementById('media-filter');
-        const conflictFilter = document.getElementById('conflict-filter');
 
-        [searchInput, decisionFilter, mediaFilter, conflictFilter].forEach(elem => {
+        [searchInput, statusFilter, mediaFilter].forEach(elem => {
             elem.addEventListener('input', applyFilters);
         });
 
         function applyFilters() {
             const query = searchInput.value.toLowerCase().trim();
-            const decVal = decisionFilter.value;
+            const statusVal = statusFilter.value;
             const mediaVal = mediaFilter.value;
-            const conVal = conflictFilter.value;
 
             const filtered = allData.filter(row => {
-                const filename = (row.filename || row.clean_filename_suggestion || '').toLowerCase();
-                const artist = (row.artist_tag || '').toLowerCase();
-                const title = (row.title_tag || '').toLowerCase();
-                const reason = (row.classification_reason || row.classifier_reason || row.reason || '').toLowerCase();
-                const folder = (row.target_folder || row.suggested_target_folder || row.review_folder || '').toLowerCase();
+                const filename = (row.filename || '').toLowerCase();
+                const artist = (row.current_artist || '').toLowerCase();
+                const title = (row.current_title || '').toLowerCase();
+                const sugArtist = (row.suggested_artist || '').toLowerCase();
+                const sugTitle = (row.suggested_title || '').toLowerCase();
+                const folder = (row.target_folder_suggestion || '').toLowerCase();
+                const reason = (row.review_reason || '').toLowerCase();
                 
-                const decision = (row.decision || row.classification_decision || '').toUpperCase();
+                const status = (row.status || 'PENDING_REVIEW').toUpperCase();
                 const mediaType = (row.media_type || '').toUpperCase();
-                const conflicts = (row.conflicts || '').toUpperCase();
 
-                const matchesQuery = filename.includes(query) || artist.includes(query) || title.includes(query) || reason.includes(query) || folder.includes(query);
+                const matchesQuery = filename.includes(query) || artist.includes(query) || title.includes(query) || sugArtist.includes(query) || sugTitle.includes(query) || folder.includes(query) || reason.includes(query);
                 
-                let matchesDecision = true;
-                if (decVal !== 'ALL') {
-                    matchesDecision = (decision === decVal);
+                let matchesStatus = true;
+                if (statusVal !== 'ALL') {
+                    matchesStatus = (status === statusVal);
                 }
 
                 let matchesMedia = true;
@@ -977,30 +1362,16 @@
                     matchesMedia = (mediaType === mediaVal);
                 }
 
-                let matchesConflict = true;
-                if (conVal !== 'ALL') {
-                    if (conVal === 'YES') {
-                        matchesConflict = (conflicts && conflicts !== 'NONE' && conflicts !== '()');
-                    } else if (conVal === 'NO') {
-                        matchesConflict = (!conflicts || conflicts === 'NONE' || conflicts === '()');
-                    } else {
-                        matchesConflict = conflicts.includes(conVal);
-                    }
-                }
-
-                return matchesQuery && matchesDecision && matchesMedia && matchesConflict;
+                return matchesQuery && matchesStatus && matchesMedia;
             });
 
             renderTable(filtered);
         }
 
         // Render Grafik visual
-        function renderCharts(data, autoSorted, review, rejected) {
-            // Hancurkan chart lama jika ada
+        function renderCharts(approved, pending, rejected, data) {
             if (decisionChart) decisionChart.destroy();
             if (mediaChart) mediaChart.destroy();
-            if (folderChart) folderChart.destroy();
-            if (reasonChart) reasonChart.destroy();
 
             const chartOptions = {
                 responsive: true,
@@ -1008,21 +1379,21 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { color: '#e2e8f0', font: { family: 'Inter', size: 10 } }
+                        labels: { color: '#cbd5e1', font: { family: 'Inter', size: 10 } }
                     }
                 }
             };
 
-            // 1. Chart Keputusan (Doughnut Chart)
+            // 1. Chart Status Antrean (Doughnut Chart)
             const ctxDec = document.getElementById('decisionChart').getContext('2d');
             decisionChart = new Chart(ctxDec, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Auto Sorted (Aman)', 'Review / Cek Manual', 'Rejected (Bad Audio)'],
+                    labels: ['Approved / Auto', 'Pending Tinjauan', 'Rejected / Bad'],
                     datasets: [{
-                        data: [autoSorted, review, rejected],
+                        data: [approved, pending, rejected],
                         backgroundColor: ['#10b981', '#eab308', '#ec4899'],
-                        borderColor: '#070913',
+                        borderColor: '#05070e',
                         borderWidth: 2
                     }]
                 },
@@ -1035,50 +1406,14 @@
                 const mt = row.media_type || 'MUSIC';
                 mediaCounts[mt] = (mediaCounts[mt] || 0) + 1;
             });
-            const mediaLabels = Object.keys(mediaCounts);
-            const mediaValues = Object.values(mediaCounts);
 
             const ctxMedia = document.getElementById('mediaChart').getContext('2d');
             mediaChart = new Chart(ctxMedia, {
                 type: 'bar',
                 data: {
-                    labels: mediaLabels,
+                    labels: Object.keys(mediaCounts),
                     datasets: [{
-                        data: mediaValues,
-                        backgroundColor: 'rgba(6, 182, 212, 0.65)',
-                        borderColor: '#06b6d4',
-                        borderWidth: 1.5,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    ...chartOptions,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { color: 'rgba(255, 255, 255, 0.04)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
-                        y: { grid: { color: 'rgba(255, 255, 255, 0.04)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
-                    }
-                }
-            });
-
-            // 3. Chart Folder Terpopuler (Horizontal Bar Chart)
-            const folderCounts = {};
-            data.forEach(row => {
-                let folder = row.target_folder || row.suggested_target_folder || row.review_folder || 'Unknown';
-                if (folder.includes('/')) folder = folder.split('/').pop();
-                folderCounts[folder] = (folderCounts[folder] || 0) + 1;
-            });
-            const sortedFolders = Object.entries(folderCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
-            const folderLabels = sortedFolders.map(x => x[0]);
-            const folderValues = sortedFolders.map(x => x[1]);
-
-            const ctxFolder = document.getElementById('folderChart').getContext('2d');
-            folderChart = new Chart(ctxFolder, {
-                type: 'bar',
-                data: {
-                    labels: folderLabels,
-                    datasets: [{
-                        data: folderValues,
+                        data: Object.values(mediaCounts),
                         backgroundColor: 'rgba(168, 85, 247, 0.65)',
                         borderColor: '#a855f7',
                         borderWidth: 1.5,
@@ -1087,50 +1422,12 @@
                 },
                 options: {
                     ...chartOptions,
-                    indexAxis: 'y',
                     plugins: { legend: { display: false } },
                     scales: {
                         x: { grid: { color: 'rgba(255, 255, 255, 0.04)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
                         y: { grid: { color: 'rgba(255, 255, 255, 0.04)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
                     }
                 }
-            });
-
-            // 4. Chart Alasan Masuk Review (Pie Chart)
-            const reasonCounts = {};
-            data.forEach(row => {
-                const dec = (row.decision || row.classification_decision || '').toUpperCase();
-                if (dec !== 'AUTO_SORT') {
-                    const reason = row.classification_reason || row.classifier_reason || row.reason || row.notes || '';
-                    let summary = 'Sinyal Rendah / Ambigu';
-                    if (reason.includes('WhatsApp')) summary = 'File WhatsApp / PTT';
-                    else if (reason.includes('corrupt') || reason.includes('nol')) summary = 'File Corrupt / Nol';
-                    else if (reason.includes('bahasa') || reason.includes('LOKAL_INSUFFICIENT')) summary = 'Bukti Bahasa Kurang';
-                    else if (reason.includes('ambigu') || reason.includes('AMBIGUOUS')) summary = 'Nama File Ambigu';
-                    else if (reason.includes('METADATA_FILENAME')) summary = 'Konflik Tag vs Nama File';
-                    else if (reason.includes('DANGEROUS')) summary = 'Keyword Berbahaya';
-                    else if (reason.includes('durasi') || reason.includes('DURATION')) summary = 'Kelainan Durasi';
-                    else if (reason.includes('kosong') || reason.includes('MISSING_BOTH')) summary = 'Tag Metadata Kosong';
-                    
-                    reasonCounts[summary] = (reasonCounts[summary] || 0) + 1;
-                }
-            });
-            const reasonLabels = Object.keys(reasonCounts).slice(0, 5);
-            const reasonValues = Object.values(reasonCounts).slice(0, 5);
-
-            const ctxReason = document.getElementById('reasonChart').getContext('2d');
-            reasonChart = new Chart(ctxReason, {
-                type: 'pie',
-                data: {
-                    labels: reasonLabels.length > 0 ? reasonLabels : ['Tidak Ada File Review'],
-                    datasets: [{
-                        data: reasonValues.length > 0 ? reasonValues : [1],
-                        backgroundColor: ['#ec4899', '#f43f5e', '#a855f7', '#06b6d4', '#eab308', '#64748b'],
-                        borderColor: '#070913',
-                        borderWidth: 2
-                    }]
-                },
-                options: chartOptions
             });
         }
     </script>

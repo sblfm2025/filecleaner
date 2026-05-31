@@ -15,7 +15,13 @@ write_basic_metadata_to_batch = import_module_by_path("write_basic_metadata", "s
 sort_to_radio_folders = import_module_by_path("sort_to_radio_folders", "scripts/05_sort_to_radio_folders.py").sort_to_radio_folders
 detect_possible_duplicates = import_module_by_path("detect_possible_duplicates", "scripts/06_detect_possible_duplicates.py").detect_possible_duplicates
 validate_output_library = import_module_by_path("validate_output_library", "scripts/07_validate_output_library.py").validate_output_library
-build_index_catalog = import_module_by_path("build_index_catalog", "scripts/08_build_index_catalog.py").main
+
+fingerprint_candidates = import_module_by_path("fingerprint_candidates", "scripts/08_fingerprint_candidates.py").fingerprint_candidates
+generate_metadata_suggestions = import_module_by_path("generate_metadata_suggestions", "scripts/09_generate_metadata_suggestions.py").evaluate_metadata_suggestions
+build_review_queue = import_module_by_path("build_review_queue", "scripts/10_build_review_queue.py").build_review_queue_draft
+apply_approved = import_module_by_path("apply_approved", "scripts/11_apply_approved_changes.py").apply_approved_changes
+build_index_catalog = import_module_by_path("build_index_catalog", "scripts/12_build_index_catalog.py").main
+export_playlists = import_module_by_path("export_playlists", "scripts/13_export_playlists.py").main
 
 def run_full_pipeline(
     batch_id: str = "",
@@ -27,7 +33,12 @@ def run_full_pipeline(
     run_sort: bool = False,
     run_duplicates: bool = False,
     run_validate: bool = False,
+    run_fingerprint: bool = False,
+    run_suggestions: bool = False,
+    run_review: bool = False,
+    run_apply_approved: bool = False,
     run_index: bool = False,
+    run_playlists: bool = False,
     resume: bool = False
 ) -> None:
     """
@@ -126,9 +137,42 @@ def run_full_pipeline(
             logs_dir=logs_dir
         )
 
-    # H. BUILD INDEX & PLAYLIST CATALOG v3.0
+    # H. ACOUSTID FINGERPRINT v4.0
+    if run_fingerprint:
+        fingerprint_candidates(
+            batch_id=batch_id,
+            logs_dir=logs_dir
+        )
+
+    # I. METADATA SUGGESTIONS v4.0
+    if run_suggestions:
+        generate_metadata_suggestions(
+            logs_dir=logs_dir
+        )
+
+    # J. BUILD REVIEW QUEUE v4.0
+    if run_review:
+        build_review_queue(
+            logs_dir=logs_dir
+        )
+
+    # K. APPLY APPROVED CHANGES v4.0
+    if run_apply_approved:
+        apply_approved(
+            final_output_dir=final_output_dir,
+            logs_dir=logs_dir
+        )
+
+    # L. BUILD INDEX CATALOG v4.0
     if run_index:
         build_index_catalog(
+            final_output_dir=final_output_dir,
+            logs_dir=logs_dir
+        )
+
+    # M. EXPORT PLAYLISTS v4.0
+    if run_playlists:
+        export_playlists(
             final_output_dir=final_output_dir,
             logs_dir=logs_dir
         )
