@@ -68,8 +68,12 @@ def clean_filename_preview(
         src_path = row.get("original_path") or row.get("source_path", "")
         old_filename = row.get("filename") or os.path.basename(src_path)
         
-        # Bersihkan nama file
-        new_name_suggestion, det_artist, det_title, change_reason = clean_filename(old_filename, cleaner_rules)
+        # Bersihkan nama file dengan menyertakan tag artist/title asli
+        artist_tag = row.get("artist_tag", "")
+        title_tag = row.get("title_tag", "")
+        new_name_suggestion, det_artist, det_title, change_reason = clean_filename(
+            old_filename, cleaner_rules, artist_tag, title_tag
+        )
         
         # Tentukan kelayakan "safe_to_apply"
         safe_to_apply = "YA"

@@ -51,7 +51,9 @@ def safe_title_case(text: str) -> str:
 
 def clean_filename(
     filename: str, 
-    rules: Dict[str, Any]
+    rules: Dict[str, Any],
+    artist_tag: str = "",
+    title_tag: str = ""
 ) -> Tuple[str, str, str, str]:
     """
     Membersihkan nama file berdasarkan aturan konfigurasi JSON.
@@ -187,12 +189,26 @@ def clean_filename(
         if artist_part and title_part:
             detected_artist = safe_title_case(artist_part)
             detected_title = safe_title_case(title_part)
-            # Gabungkan kembali secara rapi
-            name_part = f"{detected_artist} - {detected_title}"
         else:
             detected_title = safe_title_case(name_part)
     else:
         detected_title = safe_title_case(name_part)
+
+    # 6.5 Integrasikan tag metadata jika tag tersebut tersedia dan nama berkas tidak memiliki artis
+    if not detected_artist and artist_tag and title_tag:
+        a_tag_clean = artist_tag.strip()
+        t_tag_clean = title_tag.strip()
+        # Abaikan nilai tag dummy/default
+        if a_tag_clean and t_tag_clean and not any(pat in a_tag_clean.lower() for pat in ["unknown", "vario", "various"]):
+            detected_artist = safe_title_case(a_tag_clean)
+            detected_title = safe_title_case(t_tag_clean)
+            reasons.append("Nama berkas dilengkapi dari tag metadata")
+
+    # Jika artis berhasil dideteksi/dilengkapi, susun nama berkas dengan pola Artis - Judul
+    if detected_artist and detected_title:
+        name_part = f"{detected_artist} - {detected_title}"
+    elif detected_title:
+        name_part = detected_title
 
     # 7. Bersihkan sisa karakter terlarang Windows
     forbidden_removed = False

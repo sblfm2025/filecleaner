@@ -112,11 +112,16 @@ def sort_to_radio_folders(
         scan_info = scan_data_map.get(src_path, {})
         suggested_folder = scan_info.get("suggested_folder", "")
         
-        # Jika usulan folder tidak ada, tentukan ulang
+        # Jika usulan folder tidak ada, tentukan ulang dengan menyertakan parent_folder & tag metadata
         if not suggested_folder:
             filename = os.path.basename(current_batch_path)
+            parent_folder = os.path.basename(os.path.dirname(src_path)) if src_path else ""
+            genre_tag = scan_info.get("genre_tag", "")
+            artist_tag = scan_info.get("detected_artist_from_filename", "") or scan_info.get("artist_tag", "")
+            title_tag = scan_info.get("detected_title_from_filename", "") or scan_info.get("title_tag", "")
+            
             suggested_folder, _ = determine_target_folder(
-                filename, genre_tag="", artist_tag="", title_tag="", mapping_config=folder_mapping
+                filename, genre_tag, artist_tag, title_tag, folder_mapping, parent_folder
             )
             
         # Tentukan direktori tujuan absolut

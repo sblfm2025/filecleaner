@@ -88,12 +88,18 @@ def scan_audio_library(
             filename = os.path.basename(filepath)
             ext = os.path.splitext(filename)[1].lower()
             
-            # Simulasi rename & pembersihan nama file
-            cleaned_name, det_artist, det_title, change_reason = clean_filename(filename, cleaner_rules)
+            # Dapatkan folder induk relatif terhadap input_dir
+            rel_path = os.path.relpath(filepath, input_dir)
+            parent_folder = os.path.dirname(rel_path)
+
+            # Simulasi rename & pembersihan nama file dengan menyertakan tag metadata asli
+            cleaned_name, det_artist, det_title, change_reason = clean_filename(
+                filename, cleaner_rules, meta["artist_tag"], meta["title_tag"]
+            )
             
-            # Tentukan usulan folder sorting
+            # Tentukan usulan folder sorting dengan menyertakan parent_folder
             suggested_folder, sort_reason = determine_target_folder(
-                cleaned_name, meta["genre_tag"], det_artist, det_title, folder_mapping
+                cleaned_name, meta["genre_tag"], det_artist, det_title, folder_mapping, parent_folder
             )
             
             # Tentukan status file

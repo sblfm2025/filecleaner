@@ -79,7 +79,22 @@ class BatchManager:
         Jika sudah ada, mengembalikan record yang lama.
         """
         if source_path in self.manifest_data:
-            return self.manifest_data[source_path]
+            record = self.manifest_data[source_path]
+            # Jika didaftarkan dengan batch baru, perbarui batch_id dan reset status pemrosesan
+            if record.get("batch_id") != batch_id:
+                record["batch_id"] = batch_id
+                record["current_stage"] = "PENDING"
+                record["scan_status"] = "PENDING"
+                record["rename_status"] = "PENDING"
+                record["metadata_status"] = "PENDING"
+                record["sort_status"] = "PENDING"
+                record["duplicate_status"] = "PENDING"
+                record["target_path"] = ""
+                record["error_message"] = ""
+                record["processed_at"] = ""
+                self.manifest_data[source_path] = record
+                self.save_all_to_csv()
+            return record
             
         file_id = f"F_{datetime.now().strftime('%Y%m%d%H%M%S')}_{len(self.manifest_data) + 1:05d}"
         
