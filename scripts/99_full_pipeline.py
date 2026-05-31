@@ -18,6 +18,7 @@ validate_output_library = import_module_by_path("validate_output_library", "scri
 
 def run_full_pipeline(
     batch_id: str = "",
+    input_dir: str = "",
     run_scan: bool = False,
     run_preview: bool = False,
     run_apply: bool = False,
@@ -43,7 +44,8 @@ def run_full_pipeline(
     
     # Load konfigurasi batch
     batch_cfg = load_json_config("config/batch_settings.json", {})
-    input_dir = batch_cfg.get("input_dir", "data/input")
+    input_dir_cfg = batch_cfg.get("input_dir", "data/input")
+    input_dir = input_dir if input_dir else input_dir_cfg
     output_batch_dir = batch_cfg.get("output_batch_dir", "data/output_batch")
     final_output_dir = batch_cfg.get("final_output_dir", "data/output/RADIO_AUDIO_LIBRARY")
     logs_dir = batch_cfg.get("logs_dir", "data/logs")

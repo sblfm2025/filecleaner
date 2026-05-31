@@ -65,6 +65,7 @@ def main():
     parser.add_argument("--validate", action="store_true", help="Menjalankan audit kualitas QA pada library output final.")
     
     # Flag Kontrol Tambahan
+    parser.add_argument("-i", "--input-dir", type=str, default="", help="Path ke folder musik luar yang ingin dipindai langsung.")
     parser.add_argument("--resume", action="store_true", help="Melanjutkan proses batch yang terhenti berdasarkan status manifest.")
     parser.add_argument("--batch-id", type=str, default="", help="Menentukan ID batch secara manual. Jika kosong, dibuat otomatis.")
     
@@ -83,9 +84,9 @@ def main():
 
     # 4. Validasi direktori input sebelum memulai
     batch_cfg = load_json_config("config/batch_settings.json", {})
-    input_dir = batch_cfg.get("input_dir", "data/input")
+    input_dir = args.input_dir if args.input_dir else batch_cfg.get("input_dir", "data/input")
     if not os.path.exists(input_dir) or not os.listdir(input_dir):
-        logger.error(f"Folder input '{input_dir}' kosong atau tidak ditemukan! Letakkan file audio Anda di sana.")
+        logger.error(f"Folder input '{input_dir}' kosong atau tidak ditemukan! Tentukan path folder yang benar.")
         sys.exit(3) # Exit code 3: Input folder kosong
 
     # 5. Deteksi apakah ada operasi apply yang dijalankan
@@ -116,6 +117,7 @@ def main():
             logger.info("Menjalankan pipeline dalam mode aman (all-safe)...")
             run_full_pipeline(
                 batch_id=batch_id,
+                input_dir=input_dir,
                 run_scan=True,
                 run_preview=True,
                 run_apply=False,
@@ -129,6 +131,7 @@ def main():
             # Jalankan pipeline sesuai flag satuan
             run_full_pipeline(
                 batch_id=batch_id,
+                input_dir=input_dir,
                 run_scan=args.scan or args.all_safe,
                 run_preview=args.preview or args.all_safe,
                 run_apply=args.apply_rename,
