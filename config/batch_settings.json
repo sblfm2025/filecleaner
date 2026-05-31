@@ -12,5 +12,6 @@
   "input_batch_dir": "data/input_batch",
   "output_dir": "data/output",
   "output_batch_dir": "data/output_batch",
-  "logs_dir": "data/logs"
+  "logs_dir": "data/logs",
+  "final_output_dir": "data/output/RADIO_AUDIO_MASTER_LIBRARY"
 }

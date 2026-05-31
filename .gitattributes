@@ -1,0 +1,11 @@
+# Pengaturan Line Endings Terpadu stasiun radio v4.0
+# Memaksa normalisasi LF (\n) saat push untuk mencegah visual satu baris collapsed di web GitHub
+* text=auto eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.html text eol=lf
+*.bat text eol=crlf
+*.sh text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf
