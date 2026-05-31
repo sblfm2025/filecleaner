@@ -61,10 +61,11 @@ def interactive_menu():
         print(" 7. Susun File ke Folder Kategori (Sort)        *PROSES FISIK*")
         print(" 8. Deteksi & Kumpulkan Berkas Duplikat (Duplicates)")
         print(" 9. Audit Validasi Kualitas Library Akhir (Validate)")
-        print(" 10. Keluar")
+        print(" 10. Panduan Finishing (Mp3tag & MusicBrainz Picard)")
+        print(" 11. Keluar")
         print("=" * 55)
         
-        choice = input("Pilih menu (1-10): ").strip()
+        choice = input("Pilih menu (1-11): ").strip()
         
         if choice == "1":
             new_path = input(f"\nMasukkan path folder musik baru\n(Enter untuk batal, default: '{input_dir}'): ").strip()
@@ -115,10 +116,29 @@ def interactive_menu():
         elif choice == "9":
             run_full_pipeline(batch_id=batch_id, input_dir=input_dir, run_validate=True)
         elif choice == "10":
+            print("\n" + "=" * 55)
+            print("   PANDUAN INTEGRASI MP3TAG & MUSICBRAINZ PICARD")
+            print("=" * 55)
+            print("Setelah RADIO_MUSIC_CLEANER merapikan file dan folder,")
+            print("Anda dapat menggunakan tool gratis berikut untuk finishing:")
+            print("\n1. Mp3tag (Untuk Edit Tag & Gambar Album Massal)")
+            print("   - Unduh gratis di: https://www.mp3tag.de/en/download.html")
+            print("   - Cara pakai: Buka Mp3tag, masukkan folder output:")
+            print("     'data/output/RADIO_AUDIO_LIBRARY/'")
+            print("   - Blok lagu, isi Album/Genre secara massal di panel kiri.")
+            print("   - Tekan Ctrl + S untuk menyimpan.")
+            print("\n2. MusicBrainz Picard (Untuk Auto-Tag lewat Sidik Jari Suara)")
+            print("   - Unduh gratis di: https://picard.musicbrainz.org/")
+            print("   - Sangat cocok untuk file bernama 'Track 01' atau 'Unknown'.")
+            print("   - Cara pakai: Masukkan file, klik 'Scan' di menu atas.")
+            print("   - Picard akan mendengarkan suara lagu dan mencarinya di database.")
+            print("   - Klik kanan album di kolom kanan -> Save (Ctrl + S).")
+            print("=" * 55)
+        elif choice == "11":
             print("\nTerima kasih telah menggunakan RADIO_MUSIC_CLEANER. Sampai jumpa!\n")
             break
         else:
-            print("\n[ERROR] Pilihan tidak valid. Silakan pilih nomor 1-10.")
+            print("\n[ERROR] Pilihan tidak valid. Silakan pilih nomor 1-11.")
             
         input("\nTekan ENTER untuk kembali ke Menu Utama...")
 
