@@ -25,13 +25,20 @@ RADIO_AUDIO_LIBRARY/
 │   ├── Pop_Indonesia/
 │   ├── Dangdut/
 │   ├── Religi/
-│   ├── Nostalgia/
-│   └── Lagu_Anak_Remaja/
+│   ├── Rock_Alternative/
+│   ├── Jazz_Rnb/
+│   ├── Indie_Folk_Acoustic/
+│   ├── Tembang_Kenangan/
+│   └── Lagu_Anak/
 │
-├── 03_MUSIK_INTERNASIONAL/
-│   ├── Western_Pop/
-│   ├── Classic_Hits/
-│   ├── KPop/
+├── 03_MUSIK_BARAT_INTERNASIONAL/
+│   ├── Pop_Barat/
+│   ├── Rock_Barat/
+│   ├── Jazz_Rnb_Barat/
+│   ├── EDM_Dance/
+│   ├── KPop_JPop/
+│   ├── Nostalgia_Barat/
+│   ├── Acoustic_Chill/
 │   └── Soundtrack/
 │
 ├── 04_NON_MUSIK_SIARAN/
@@ -113,8 +120,11 @@ Subfolder:
 Pop_Indonesia
 Dangdut
 Religi
-Nostalgia
-Lagu_Anak_Remaja
+Rock_Alternative
+Jazz_Rnb
+Indie_Folk_Acoustic
+Tembang_Kenangan
+Lagu_Anak
 ```
 
 Jika tidak ada informasi cukup untuk genre, tetapi nama file jelas `Artis - Judul`, default boleh masuk:
@@ -125,14 +135,18 @@ Jika tidak ada informasi cukup untuk genre, tetapi nama file jelas `Artis - Judu
 
 Namun jika ragu, masukkan ke `90_PERLU_DICEK`.
 
-## 4. 03_MUSIK_INTERNASIONAL
+## 4. 03_MUSIK_BARAT_INTERNASIONAL
 
 Untuk lagu luar negeri:
 
 ```text
-Western_Pop
-Classic_Hits
-KPop
+Pop_Barat
+Rock_Barat
+Jazz_Rnb_Barat
+EDM_Dance
+KPop_JPop
+Nostalgia_Barat
+Acoustic_Chill
 Soundtrack
 ```
 

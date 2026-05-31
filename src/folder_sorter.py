@@ -61,27 +61,48 @@ def determine_target_folder(
     genre_lower = genre_tag.lower() if genre_tag else ""
     parent_lower = parent_folder.lower() if parent_folder else ""
     
+    # Deteksi bahasa Inggris awal untuk alih genre internasional cerdas
+    text_to_check = ""
+    if title_tag:
+        text_to_check += " " + title_tag
+    if artist_tag:
+        text_to_check += " " + artist_tag
+    if not text_to_check.strip():
+        text_to_check = filename_lower
+        
+    is_eng = is_likely_english_text(text_to_check)
+    fallback_map = mapping_config.get("international_genre_fallback", {})
+    
+    def resolve_folder(folder: str) -> Tuple[str, str]:
+        if is_eng and folder in fallback_map:
+            return fallback_map[folder], " (dialihkan ke internasional)"
+        return folder, ""
+        
     # 1. Cek berdasarkan Kata Kunci Folder Induk (Parent Folder) - Prioritas Utama
     if parent_lower:
         for keyword, target_folder in keyword_mapping.items():
             if keyword.lower() in parent_lower:
-                return target_folder, f"Cocok dengan kata kunci folder induk '{keyword}'"
+                resolved_folder, note = resolve_folder(target_folder)
+                return resolved_folder, f"Cocok dengan kata kunci folder induk '{keyword}'{note}"
             
     # 2. Cek berdasarkan Prefix Nama File (case-insensitive)
     for prefix, target_folder in prefix_mapping.items():
         if filename_lower.startswith(prefix.lower()):
-            return target_folder, f"Cocok dengan prefix '{prefix}'"
+            resolved_folder, note = resolve_folder(target_folder)
+            return resolved_folder, f"Cocok dengan prefix '{prefix}'{note}"
             
     # 3. Cek berdasarkan Kata Kunci Nama File (case-insensitive)
     for keyword, target_folder in keyword_mapping.items():
         if keyword.lower() in filename_lower:
-            return target_folder, f"Cocok dengan kata kunci nama file '{keyword}'"
+            resolved_folder, note = resolve_folder(target_folder)
+            return resolved_folder, f"Cocok dengan kata kunci nama file '{keyword}'{note}"
             
     # 4. Cek berdasarkan Tag Genre
     if genre_lower:
         for keyword, target_folder in keyword_mapping.items():
             if keyword.lower() in genre_lower:
-                return target_folder, f"Cocok dengan kata kunci genre tag '{keyword}'"
+                resolved_folder, note = resolve_folder(target_folder)
+                return resolved_folder, f"Cocok dengan kata kunci genre tag '{keyword}'{note}"
 
     # 5. Filter file ambigu
     # Daftar nama file yang dianggap ambigu
@@ -139,20 +160,9 @@ def determine_target_folder(
     if is_ambiguous:
         return needs_review, f"File ambigu: {reason_ambiguous}"
     else:
-        # Ambil folder internasional default
-        default_international = mapping_config.get("default_international_folder", "03_MUSIK_BARAT_INTERNASIONAL/Pop_Barat")
-        
-        # Cek apakah lagu ini lagu internasional/Barat berdasarkan teks (judul/artis)
-        text_to_check = ""
-        if title_tag:
-            text_to_check += " " + title_tag
-        if artist_tag:
-            text_to_check += " " + artist_tag
-        if not text_to_check.strip():
-            text_to_check = filename_lower
-            
-        if is_likely_english_text(text_to_check):
-            return default_international, "Terdeteksi kemungkinan besar lagu internasional (bahasa Inggris)"
+        if is_eng:
+            resolved_folder, note = resolve_folder(default_music)
+            return resolved_folder, f"Terdeteksi kemungkinan besar lagu internasional (bahasa Inggris){note}"
             
         # Jika file memiliki pola Artist - Title yang jelas atau metadata yang valid, default masuk Pop Indonesia
         return default_music, "Fallback default musik Indonesia (pola Artis - Judul jelas atau metadata valid)"
