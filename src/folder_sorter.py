@@ -13,8 +13,9 @@ Untuk penggunaan baru, gunakan langsung:
 
 import os
 import re
+import warnings
 from typing import Dict, Any, Tuple
-from src.audio_classifier import classify_audio
+from src.audio_classifier import classify_audio_file
 from src.utils import load_json_config
 
 
@@ -27,25 +28,28 @@ def determine_target_folder(
     parent_folder: str = ""
 ) -> Tuple[str, str]:
     """
-    [WRAPPER - DEPRECATED] Gunakan classify_audio() untuk penggunaan baru.
+    [WRAPPER - DEPRECATED] Gunakan classify_audio_file() untuk penggunaan baru.
 
-    Mendelegasikan ke classify_audio() dan mengembalikan:
+    Mendelegasikan ke classify_audio_file() dan mengembalikan:
     (target_folder, reason)
 
     Kompatibel dengan semua pemanggil lama.
     """
-    # Muat konfigurasi classifier
-    classifier_config = load_json_config("config/classifier_config.json", {})
+    warnings.warn(
+        "determine_target_folder() is deprecated and will be removed. "
+        "Use src.audio_classifier.classify_audio_file() instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
 
-    # Jalankan classifier multi-stage
-    result = classify_audio(
+    # Jalankan classifier multi-stage v3.0
+    result = classify_audio_file(
         filename=filename,
         artist_tag=artist_tag,
         title_tag=title_tag,
         genre_tag=genre_tag,
-        duration_seconds=0.0,  # durasi tidak tersedia di interface lama
-        parent_folder=parent_folder,
-        config=classifier_config
+        duration_seconds=None,  # durasi tidak tersedia di interface lama
+        parent_folder=parent_folder
     )
 
     return result["target_folder"], result["reason"]

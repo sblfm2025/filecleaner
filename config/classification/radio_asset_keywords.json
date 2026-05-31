@@ -1,0 +1,53 @@
+{
+  "_comment": "Kata kunci untuk aset stasiun radio. Biasanya terdeteksi lewat prefix kuat, tapi juga bisa lewat keyword ini.",
+  "station_id": {
+    "target_folder": "06_MASTER_RADIO_ASSETS/01_STATION_ID",
+    "keywords": [
+      "station id", "stationid", "station identification",
+      "id station", "radio id", "id radio",
+      "callsign", "call sign", "identitas stasiun",
+      "on air id", "on-air id"
+    ]
+  },
+  "jingles": {
+    "target_folder": "06_MASTER_RADIO_ASSETS/02_JINGLES",
+    "keywords": [
+      "jingle", "station jingle", "radio jingle",
+      "theme song station", "opening theme station"
+    ]
+  },
+  "sweepers": {
+    "target_folder": "06_MASTER_RADIO_ASSETS/03_SWEEPERS",
+    "keywords": [
+      "sweeper", "liner", "separator", "imaging element"
+    ]
+  },
+  "program_bumpers": {
+    "target_folder": "06_MASTER_RADIO_ASSETS/04_PROGRAM_BUMPERS",
+    "keywords": [
+      "bumper", "program bumper", "in bumper", "out bumper",
+      "bumper masuk", "bumper keluar", "program bed open",
+      "program open", "program close"
+    ]
+  },
+  "promo_radio": {
+    "target_folder": "06_MASTER_RADIO_ASSETS/05_PROMO_RADIO",
+    "keywords": [
+      "promo radio", "promo station", "promosi radio",
+      "promo program", "promo acara", "promo on air"
+    ]
+  },
+  "voice_over": {
+    "target_folder": "06_MASTER_RADIO_ASSETS/06_VOICE_OVER_RAW",
+    "keywords": [
+      "voice over", "voiceover", "vo raw", "narasi", "narrator",
+      "penyiar", "announcer take", "raw vo", "rekaman penyiar"
+    ]
+  },
+  "duration_hints": {
+    "typical_jingle_max": 60,
+    "typical_sweeper_max": 30,
+    "typical_bumper_max": 30,
+    "typical_vo_max": 120
+  }
+}

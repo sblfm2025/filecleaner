@@ -1,0 +1,69 @@
+{
+  "confidence_thresholds": {
+    "auto_sort": 85,
+    "review_with_suggestion": 60,
+    "needs_review": 0
+  },
+  "folder_root": "RADIO_AUDIO_MASTER_LIBRARY",
+  "default_music_folder": "01_MASTER_MUSIC/10_UNKNOWN_RELEASE_TYPE",
+  "default_review_folder": "90_NEEDS_REVIEW/02_LOW_CONFIDENCE_CATEGORY",
+  "bad_audio_folder": "92_BAD_AUDIO",
+  "archive_folder": "99_ARCHIVE_OLD_LIBRARY",
+  "duplicate_folder": "91_DUPLICATE_SUSPECTED",
+  "allow_parent_folder_auto_sort": false,
+  "allow_keyword_only_auto_sort": false,
+  "allow_dangerous_keyword_auto_sort": false,
+  "require_two_signals_for_local": true,
+  "require_strong_signal_for_international": true,
+  "conflict_detection_enabled": true,
+  "duration_rules": {
+    "bad_audio_max_seconds": 0,
+    "sfx_max_seconds": 10,
+    "jingle_max_seconds": 60,
+    "ad_min_seconds": 10,
+    "ad_max_seconds": 120,
+    "insert_max_seconds": 45,
+    "song_min_seconds": 120,
+    "song_max_seconds": 480,
+    "extended_max_seconds": 900,
+    "long_program_min_seconds": 900
+  },
+  "supported_extensions": [".mp3", ".wav", ".flac", ".ogg", ".aac", ".m4a", ".wma", ".opus"],
+  "score_matrix": {
+    "positive": {
+      "strong_prefix_match": 50,
+      "radio_asset_prefix": 50,
+      "commercial_prefix": 50,
+      "public_service_prefix": 50,
+      "artist_whitelist_match": 30,
+      "international_artist_whitelist": 30,
+      "keyword_strong_match": 25,
+      "valid_metadata_artist_title": 25,
+      "local_keyword_strong": 25,
+      "filename_artist_title_pattern": 20,
+      "genre_tag_strong_match": 20,
+      "duration_type_match": 10,
+      "keyword_medium_match": 15,
+      "program_duration_and_keyword": 40,
+      "parent_folder_hint": 8,
+      "keyword_weak_match": 5,
+      "parent_folder_only": 5,
+      "english_title_short": 5,
+      "generic_mood_word": 3
+    },
+    "penalties": {
+      "ambiguous_filename": -40,
+      "dangerous_keyword_only": -30,
+      "metadata_filename_conflict": -35,
+      "parent_folder_only_match": -25,
+      "duration_category_conflict": -30,
+      "artist_unknown": -20,
+      "title_unknown": -20,
+      "year_unknown": -5,
+      "genre_unknown": -5,
+      "no_artist_title_pattern": -25,
+      "missing_both_tags": -20,
+      "missing_both_tags_with_known_artist": -5
+    }
+  }
+}

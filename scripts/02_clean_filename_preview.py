@@ -7,11 +7,13 @@ from src.utils import load_json_config, setup_logger
 from src.filename_cleaner import clean_filename
 from src.batch_manager import BatchManager
 from src.report_writer import write_csv_report, convert_csv_to_xlsx
+from src.audio_classifier import classify_audio_file
 
-# Kolom untuk preview rename
+# Kolom untuk preview rename v3.0
 PREVIEW_COLUMNS = [
     "source_path", "old_filename", "new_filename_suggestion", 
-    "detected_artist", "detected_title", "change_reason", "safe_to_apply", "notes"
+    "detected_artist", "detected_title", "change_reason", 
+    "safe_to_apply", "rename_status", "notes"
 ]
 
 def clean_filename_preview(
@@ -75,23 +77,46 @@ def clean_filename_preview(
             old_filename, cleaner_rules, artist_tag, title_tag
         )
         
-        # Tentukan kelayakan "safe_to_apply"
+        # Panggil classify_audio_file untuk mendeteksi tipe media berkas
+        duration_raw = row.get("duration_seconds", 0)
+        try:
+            duration = float(duration_raw) if duration_raw else None
+        except (ValueError, TypeError):
+            duration = None
+            
+        clf = classify_audio_file(
+            filename=new_name_suggestion,
+            artist_tag=artist_tag,
+            title_tag=title_tag,
+            genre_tag=row.get("genre_tag", ""),
+            album_tag=row.get("album_tag", ""),
+            year_tag=row.get("year_tag", ""),
+            parent_folder=row.get("parent_folder", ""),
+            duration_seconds=duration
+        )
+        
+        media_type = clf["media_type"]
+        
+        # Tentukan kelayakan safe_to_apply dan rename_status v3.0
         safe_to_apply = "YA"
+        rename_status = "SAFE_RENAME"
         notes = "Siap untuk rename"
         
-        # Cek jika nama file hasil pembersihan sama persis dengan nama lama
-        if old_filename.lower() == new_name_suggestion.lower():
-            notes = "Nama file sudah bersih, tidak ada perubahan"
-        
-        # Cek kejelasan
-        if not det_artist or not det_title:
-            if "-" not in new_name_suggestion:
-                safe_to_apply = "YA" # Tetap boleh di-rename meskipun non-musik (seperti jingle)
-                notes = "Penamaan non-lagu terdeteksi (tanpa tanda hubung -)"
-                
+        # 1. Cek review manual nama
         if not new_name_suggestion or new_name_suggestion.startswith("Cleaned_Audio"):
             safe_to_apply = "TIDAK"
+            rename_status = "NEEDS_MANUAL_NAME_REVIEW"
             notes = "Hasil pembersihan nama kosong atau menggunakan fallback default"
+        
+        # 2. Cek non-musik/aset radio
+        elif media_type in ("RADIO_ASSET", "COMMERCIAL_AD", "PUBLIC_SERVICE", "INSTRUMENTAL_BED", "PROGRAM_RECORDING"):
+            rename_status = "NON_MUSIC_ASSET_CONFIRMED"
+            notes = f"Aset non-musik terkonfirmasi ({media_type})"
+            
+        # 3. Cek apakah hanya perlu pembersihan ringan
+        elif old_filename.lower() == new_name_suggestion.lower():
+            rename_status = "SAFE_CLEAN_ONLY"
+            notes = "Nama file sudah bersih, tidak ada perubahan substantif"
             
         preview_row = {
             "source_path": src_path,
@@ -101,6 +126,7 @@ def clean_filename_preview(
             "detected_title": det_title,
             "change_reason": change_reason,
             "safe_to_apply": safe_to_apply,
+            "rename_status": rename_status,
             "notes": notes
         }
         

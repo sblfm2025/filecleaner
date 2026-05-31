@@ -3,27 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Analitik — RADIO_MUSIC_CLEANER</title>
+    <title>SBL-FM Audio Library Classifier Dashboard v3.0</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-primary: #0a0e17;
-            --bg-secondary: rgba(18, 26, 44, 0.6);
-            --border-color: rgba(255, 255, 255, 0.08);
-            --text-primary: #f3f4f6;
-            --text-secondary: #9ca3af;
-            --accent-cyan: #00f0ff;
-            --accent-purple: #bd00ff;
-            --accent-green: #05ffc4;
-            --accent-red: #ff3b69;
-            --accent-yellow: #ffe600;
-            --glass-bg: rgba(10, 14, 23, 0.7);
-            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --bg-primary: #070913;
+            --bg-secondary: rgba(15, 22, 42, 0.45);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --accent-green: #10b981;
+            --accent-yellow: #eab308;
+            --accent-red: #ef4444;
+            --glass-bg: rgba(15, 23, 42, 0.75);
+            --glass-blur: blur(16px);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --neon-glow: 0 0 20px rgba(6, 182, 212, 0.15);
         }
 
         * {
@@ -38,17 +41,33 @@
             color: var(--text-primary);
             min-height: 100vh;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(189, 0, 255, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.05) 0%, transparent 40%);
+                radial-gradient(circle at 5% 10%, rgba(168, 85, 247, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 95% 90%, rgba(6, 182, 212, 0.08) 0%, transparent 35%);
             background-attachment: fixed;
-            padding-bottom: 50px;
+            padding-bottom: 60px;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         header {
-            background-color: rgba(10, 14, 23, 0.85);
-            backdrop-filter: blur(12px);
+            background-color: rgba(7, 9, 19, 0.85);
+            backdrop-filter: var(--glass-blur);
             border-bottom: 1px solid var(--border-color);
-            padding: 20px 40px;
+            padding: 15px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -57,22 +76,46 @@
             z-index: 100;
         }
 
-        .logo-section h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: 1px;
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
             background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+        }
+
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #fff;
+        }
+
+        .logo-text h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #fff, #94a3b8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .logo-section p {
-            font-size: 11px;
-            color: var(--text-secondary);
+        .logo-text p {
+            font-size: 10px;
+            color: var(--accent-cyan);
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-top: 2px;
+            font-weight: 700;
+            margin-top: 1px;
         }
 
         .header-actions {
@@ -80,33 +123,33 @@
             gap: 15px;
         }
 
-        /* Upload Area */
-        .upload-btn-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-
         .btn-upload {
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(189, 0, 255, 0.15));
-            border: 1px solid var(--accent-cyan);
-            color: var(--accent-cyan);
-            padding: 10px 20px;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(168, 85, 247, 0.15));
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            color: #fff;
+            padding: 9px 18px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             gap: 8px;
+            backdrop-filter: var(--glass-blur);
         }
 
         .btn-upload:hover {
             background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            color: var(--bg-primary);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
-            transform: translateY(-2px);
+            border-color: transparent;
+            box-shadow: var(--neon-glow);
+            transform: translateY(-1.5px);
+        }
+
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
         }
 
         .upload-btn-wrapper input[type=file] {
@@ -118,23 +161,24 @@
             cursor: pointer;
         }
 
-        /* Main Container */
+        /* Container */
         .container {
-            max-width: 1400px;
-            margin: 40px auto;
-            padding: 0 20px;
+            max-width: 1440px;
+            margin: 30px auto;
+            padding: 0 30px;
         }
 
-        /* Welcome Section */
+        /* Welcome Card */
         .welcome-card {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
+            padding: 24px 30px;
+            margin-bottom: 25px;
             box-shadow: var(--card-shadow);
             position: relative;
             overflow: hidden;
+            backdrop-filter: var(--glass-blur);
         }
 
         .welcome-card::before {
@@ -142,96 +186,108 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(0, 240, 255, 0.08) 0%, transparent 70%);
+            width: 300px;
+            height: 100%;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.08) 0%, transparent 70%);
             pointer-events: none;
         }
 
         .welcome-card h2 {
             font-family: 'Outfit', sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 10px;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .welcome-card p {
             color: var(--text-secondary);
-            line-height: 1.6;
-            max-width: 800px;
+            font-size: 14px;
+            line-height: 1.5;
+            max-width: 900px;
         }
 
         /* Drop Zone */
         #drop-zone {
-            border: 2px dashed rgba(0, 240, 255, 0.3);
+            border: 2px dashed rgba(6, 182, 212, 0.35);
             border-radius: 16px;
-            padding: 40px;
+            padding: 50px 30px;
             text-align: center;
-            background: rgba(18, 26, 44, 0.2);
-            transition: all 0.3s ease;
-            margin-bottom: 40px;
+            background: rgba(15, 23, 42, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 30px;
             cursor: pointer;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
         }
 
-        #drop-zone.highlight {
+        #drop-zone:hover, #drop-zone.highlight {
             border-color: var(--accent-cyan);
-            background: rgba(0, 240, 255, 0.05);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+            background: rgba(6, 182, 212, 0.05);
+            box-shadow: var(--neon-glow), inset 0 0 10px rgba(6, 182, 212, 0.1);
         }
 
         #drop-zone svg {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             fill: var(--accent-cyan);
-            margin-bottom: 15px;
-            opacity: 0.7;
+            margin-bottom: 12px;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.4));
         }
 
         #drop-zone h3 {
-            font-size: 18px;
-            margin-bottom: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
         }
 
         #drop-zone p {
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .stat-card {
             background: var(--glass-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 14px;
+            padding: 18px 20px;
             box-shadow: var(--card-shadow);
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            transition: all 0.3s ease;
             position: relative;
+            overflow: hidden;
+            backdrop-filter: var(--glass-blur);
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.12);
         }
 
         .stat-card p {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
         .stat-card .value {
             font-family: 'Outfit', sans-serif;
-            font-size: 36px;
-            font-weight: 700;
+            font-size: 32px;
+            font-weight: 900;
+            line-height: 1;
         }
 
         .stat-card::after {
@@ -240,24 +296,26 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 4px;
-            border-radius: 0 0 12px 12px;
+            height: 3px;
+            border-radius: 0 0 14px 14px;
         }
 
         .stat-total::after { background: var(--accent-cyan); }
         .stat-ok::after { background: var(--accent-green); }
         .stat-review::after { background: var(--accent-yellow); }
         .stat-error::after { background: var(--accent-red); }
+        .stat-confidence::after { background: var(--accent-purple); }
+        .stat-conflict::after { background: var(--accent-pink); }
 
         /* Dashboard Content Layout */
         .dashboard-content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
             .dashboard-content {
                 grid-template-columns: 1fr;
             }
@@ -267,136 +325,161 @@
             background: var(--glass-bg);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 25px;
+            padding: 24px;
             box-shadow: var(--card-shadow);
+            backdrop-filter: var(--glass-blur);
         }
 
         .card h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 20px;
-            margin-bottom: 20px;
-            border-left: 4px solid var(--accent-purple);
-            padding-left: 10px;
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            border-left: 3.5px solid var(--accent-purple);
+            padding-left: 8px;
+            letter-spacing: 0.5px;
         }
 
         /* Charts Container */
         .chart-container {
             position: relative;
-            height: 300px;
+            height: 260px;
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* Table Card */
+        /* Table Card & Filter */
         .table-card {
             grid-column: 1 / -1;
         }
 
         .table-actions {
             display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .table-header-row {
+            display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            gap: 15px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
         .search-box {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 10px 15px;
+            padding: 9px 14px;
             color: var(--text-primary);
-            font-size: 14px;
-            min-width: 250px;
+            font-size: 13px;
+            min-width: 240px;
             outline: none;
             transition: all 0.3s ease;
         }
 
         .search-box:focus {
             border-color: var(--accent-cyan);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
         }
 
         .filter-select {
-            background: #121a2c;
+            background: #0f172a;
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 10px 15px;
+            padding: 9px 14px;
             color: var(--text-primary);
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
             cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-select:hover {
+            border-color: rgba(255, 255, 255, 0.15);
         }
 
         .table-wrapper {
             overflow-x: auto;
-            max-height: 500px;
+            max-height: 480px;
             overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         th {
-            background-color: rgba(255, 255, 255, 0.03);
+            background-color: rgba(15, 23, 42, 0.95);
             color: var(--text-secondary);
-            font-weight: 600;
-            padding: 12px 15px;
+            font-weight: 700;
+            padding: 12px 14px;
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 10;
-            backdrop-filter: blur(5px);
         }
 
         td {
-            padding: 12px 15px;
+            padding: 11px 14px;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-primary);
-            max-width: 300px;
+            max-width: 250px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         tr:hover {
-            background-color: rgba(255, 255, 255, 0.02);
+            background-color: rgba(255, 255, 255, 0.015);
         }
 
         /* Status Badges */
         .badge {
             display: inline-block;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
+            padding: 3px 6px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 800;
             text-transform: uppercase;
         }
 
-        .badge-ok {
-            background-color: rgba(5, 255, 196, 0.1);
+        .badge-autosort {
+            background-color: rgba(16, 185, 129, 0.1);
             color: var(--accent-green);
-            border: 1px solid rgba(5, 255, 196, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.15);
         }
 
         .badge-review {
-            background-color: rgba(255, 230, 0, 0.1);
+            background-color: rgba(234, 179, 8, 0.1);
             color: var(--accent-yellow);
-            border: 1px solid rgba(255, 230, 0, 0.2);
+            border: 1px solid rgba(234, 179, 8, 0.15);
         }
 
-        .badge-error {
-            background-color: rgba(255, 59, 105, 0.1);
+        .badge-needsreview {
+            background-color: rgba(239, 68, 68, 0.1);
             color: var(--accent-red);
-            border: 1px solid rgba(255, 59, 105, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+        }
+
+        .badge-reject {
+            background-color: rgba(236, 72, 153, 0.1);
+            color: var(--accent-pink);
+            border: 1px solid rgba(236, 72, 153, 0.15);
         }
 
         /* Empty State */
@@ -407,11 +490,23 @@
         }
 
         .empty-state svg {
-            width: 64px;
-            height: 64px;
+            width: 54px;
+            height: 54px;
             fill: var(--text-secondary);
-            margin-bottom: 20px;
-            opacity: 0.3;
+            margin-bottom: 15px;
+            opacity: 0.25;
+        }
+
+        .empty-state h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .empty-state p {
+            font-size: 13px;
         }
     </style>
 </head>
@@ -419,14 +514,19 @@
 
     <header>
         <div class="logo-section">
-            <h1>RADIO_MUSIC_CLEANER</h1>
-            <p>Dashboard Analitik & Audit Library</p>
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            </div>
+            <div class="logo-text">
+                <h1>SBL-FM RADIO</h1>
+                <p>Classifier Audit Dashboard v3.0</p>
+            </div>
         </div>
         <div class="header-actions">
             <div class="upload-btn-wrapper">
                 <button class="btn-upload">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    Unggah Laporan CSV
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Unggah Laporan Klasifikasi
                 </button>
                 <input type="file" id="csv-file-input" accept=".csv" />
             </div>
@@ -437,8 +537,8 @@
         
         <!-- Welcome Card -->
         <div class="welcome-card">
-            <h2>Selamat Datang di Portal Analitik Library</h2>
-            <p>Unggah berkas <code>audio_scan_report.csv</code> atau <code>folder_sorting_report.csv</code> Anda untuk memvisualisasikan data, melihat status audit secara interaktif, mengevaluasi file ambigu, serta menyaring track siaran dengan mudah.</p>
+            <h2>Portal Audit Klasifikasi & Sorting Radio</h2>
+            <p>Portal visualisasi real-time berbasis confidence score stasiun radio profesional. Unggah berkas laporan <code>audio_scan_report.csv</code>, <code>folder_sorting_report.csv</code>, atau <code>classification_report.csv</code> dari direktori <code>data/logs/</code> Anda untuk melakukan audit interaktif terhadap keputusan model, konflik metadata, dan tipe alokasi media.</p>
         </div>
 
         <!-- Drop Zone -->
@@ -446,60 +546,111 @@
             <svg viewBox="0 0 24 24">
                 <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
             </svg>
-            <h3>Tarik & Lepaskan File CSV Laporan Di Sini</h3>
-            <p>Atau klik tombol "Unggah Laporan CSV" di kanan atas</p>
+            <h3>Tarik & Lepaskan File CSV Laporan Klasifikasi Di Sini</h3>
+            <p>Atau klik area ini untuk memindai dokumen dari komputer Anda secara manual</p>
         </div>
 
-        <!-- Stats Grid (Hidden initially, shown after load) -->
+        <!-- Stats Grid (Hidden initially) -->
         <div class="stats-grid" id="stats-area" style="display: none;">
             <div class="stat-card stat-total">
-                <p>Total Track</p>
+                <p>Total Berkas</p>
                 <div class="value" id="val-total">0</div>
             </div>
             <div class="stat-card stat-ok">
-                <p>Status OK</p>
+                <p>Auto Sorted (Lolos)</p>
                 <div class="value" id="val-ok">0</div>
             </div>
             <div class="stat-card stat-review">
-                <p>Perlu Dicek</p>
+                <p>Review (Perlu Cek)</p>
                 <div class="value" id="val-review">0</div>
             </div>
             <div class="stat-card stat-error">
-                <p>File Error / Corrupt</p>
+                <p>Rejected (Bad Audio)</p>
                 <div class="value" id="val-error">0</div>
+            </div>
+            <div class="stat-card stat-confidence">
+                <p>Rerata Confidence</p>
+                <div class="value" id="val-confidence">0%</div>
+            </div>
+            <div class="stat-card stat-conflict">
+                <p>Konflik Terdeteksi</p>
+                <div class="value" id="val-conflict">0</div>
             </div>
         </div>
 
-        <!-- Dashboard Content Grid -->
+        <!-- Dashboard Content Grid (Hidden initially) -->
         <div class="dashboard-content" id="dashboard-main-content" style="display: none;">
             
-            <!-- Chart Kategori -->
+            <!-- Chart Keputusan Classifier -->
             <div class="card">
-                <h3>Distribusi Genre & Kategori</h3>
+                <h3>Distribusi Keputusan Classifier</h3>
                 <div class="chart-container">
-                    <canvas id="genreChart"></canvas>
+                    <canvas id="decisionChart"></canvas>
                 </div>
             </div>
 
-            <!-- Chart Keterbacaan Audio -->
+            <!-- Chart Tipe Media -->
             <div class="card">
-                <h3>Analisis Kualitas File</h3>
+                <h3>Distribusi Tipe Media (Radio Assets)</h3>
                 <div class="chart-container">
-                    <canvas id="qualityChart"></canvas>
+                    <canvas id="mediaChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart Folder Tujuan -->
+            <div class="card">
+                <h3>5 Folder Master Terpopuler</h3>
+                <div class="chart-container">
+                    <canvas id="folderChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart Alasan Utama Masuk Review -->
+            <div class="card">
+                <h3>Penyebab Terbanyak File Masuk Review</h3>
+                <div class="chart-container">
+                    <canvas id="reasonChart"></canvas>
                 </div>
             </div>
 
             <!-- Table Card -->
             <div class="card table-card">
                 <div class="table-actions">
-                    <h3>Daftar Audit Berkas Audio</h3>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" class="search-box" id="search-input" placeholder="Cari Artis, Judul, atau Nama File...">
-                        <select class="filter-select" id="status-filter">
-                            <option value="ALL">Semua Status</option>
-                            <option value="OK">Status OK</option>
-                            <option value="PERLU_DICEK">Perlu Dicek</option>
-                            <option value="AUDIO_ERROR">Audio Error</option>
+                    <div class="table-header-row">
+                        <h3>Daftar Audit Berkas Audio v3.0</h3>
+                    </div>
+                    <div class="filter-row">
+                        <input type="text" class="search-box" id="search-input" placeholder="Cari Artis, Judul, File, atau Folder...">
+                        
+                        <select class="filter-select" id="decision-filter">
+                            <option value="ALL">Semua Keputusan</option>
+                            <option value="AUTO_SORT">AUTO_SORT</option>
+                            <option value="REVIEW_WITH_SUGGESTION">REVIEW_WITH_SUGGESTION</option>
+                            <option value="NEEDS_REVIEW">NEEDS_REVIEW</option>
+                            <option value="REJECT_BAD_AUDIO">REJECT_BAD_AUDIO</option>
+                        </select>
+
+                        <select class="filter-select" id="media-filter">
+                            <option value="ALL">Semua Tipe Media</option>
+                            <option value="MUSIC">MUSIC (Umum)</option>
+                            <option value="LOCAL_REGIONAL_MUSIC">LOCAL_REGIONAL_MUSIC</option>
+                            <option value="INTERNATIONAL_MUSIC">INTERNATIONAL_MUSIC</option>
+                            <option value="RELIGIOUS_MUSIC">RELIGIOUS_MUSIC</option>
+                            <option value="RADIO_ASSET">RADIO_ASSET</option>
+                            <option value="COMMERCIAL_AD">COMMERCIAL_AD</option>
+                            <option value="PUBLIC_SERVICE">PUBLIC_SERVICE (ILM)</option>
+                            <option value="INSTRUMENTAL_BED">INSTRUMENTAL_BED</option>
+                            <option value="PROGRAM_RECORDING">PROGRAM_RECORDING</option>
+                        </select>
+
+                        <select class="filter-select" id="conflict-filter">
+                            <option value="ALL">Semua Konflik</option>
+                            <option value="YES">Ada Konflik</option>
+                            <option value="NO">Tanpa Konflik</option>
+                            <option value="METADATA_FILENAME_CONFLICT">Konflik Tag vs File</option>
+                            <option value="DURATION_CATEGORY_CONFLICT">Konflik Durasi</option>
+                            <option value="AMBIGUOUS_FILENAME">Nama File Ambigu</option>
+                            <option value="DANGEROUS_KEYWORD_PRESENT">Keyword Berbahaya</option>
                         </select>
                     </div>
                 </div>
@@ -507,17 +658,17 @@
                     <table id="audit-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Nama File</th>
-                                <th>Durasi</th>
-                                <th>Artis Tag</th>
-                                <th>Judul Tag</th>
-                                <th>Status</th>
-                                <th>Keterangan</th>
+                                <th>File Name / Path</th>
+                                <th>Media Type</th>
+                                <th>Conf</th>
+                                <th>Decision</th>
+                                <th>Target / Review Folder</th>
+                                <th>Conflicts / Warnings</th>
+                                <th>Alasan Rinci</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">
-                            <!-- Rows will be dynamically loaded -->
+                            <!-- Baris dimuat secara dinamis via JavaScript -->
                         </tbody>
                     </table>
                 </div>
@@ -530,22 +681,23 @@
             <svg viewBox="0 0 24 24">
                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2zm0-4H7V7h10v2zm0 8H7v-2h10v2z"/>
             </svg>
-            <h2>Belum Ada Laporan yang Dimuat</h2>
+            <h2>Belum Ada Laporan Klasifikasi yang Dimuat</h2>
             <p>Silakan seret file CSV dari direktori <code>data/logs/</code> Anda ke area di atas untuk memulai analisis.</p>
         </div>
 
     </div>
 
     <script>
-        // Set up Event Listeners untuk Drag and Drop
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('csv-file-input');
         
-        let allData = []; // Menyimpan data mentah hasil parse
-        let genreChart = null;
-        let qualityChart = null;
+        let allData = []; // Menyimpan data mentah
+        let decisionChart = null;
+        let mediaChart = null;
+        let folderChart = null;
+        let reasonChart = null;
 
-        // Drag events
+        // Drag & drop event listeners
         ['dragenter', 'dragover'].forEach(eventName => {
             dropZone.addEventListener(eventName, highlight, false);
         });
@@ -583,10 +735,9 @@
             }
         }
 
-        // Memproses file CSV
         function processFile(file) {
             if (!file.name.endsWith('.csv')) {
-                alert('Tolong unggah berkas berformat CSV hasil keluaran dari RADIO_MUSIC_CLEANER.');
+                alert('Tolong unggah berkas berformat CSV hasil keluaran dari SBL-FM Filecleaner.');
                 return;
             }
 
@@ -598,7 +749,6 @@
             reader.readAsText(file);
         }
 
-        // CSV Parser sederhana
         function parseCSV(text) {
             const lines = [];
             let row = [""];
@@ -611,7 +761,7 @@
                 if (c === '"') {
                     if (inQuotes && next === '"') {
                         row[row.length - 1] += '"';
-                        i++; // skip next quote
+                        i++;
                     } else {
                         inQuotes = !inQuotes;
                     }
@@ -619,7 +769,7 @@
                     row.push("");
                 } else if ((c === '\r' || c === '\n') && !inQuotes) {
                     if (c === '\r' && next === '\n') {
-                        i++; // skip \n
+                        i++;
                     }
                     lines.push(row);
                     row = [""];
@@ -653,227 +803,336 @@
             buildDashboard(data);
         }
 
-        // Membangun Tampilan Dashboard
         function buildDashboard(data) {
             allData = data;
             
-            // Tampilkan komponen dashboard, sembunyikan empty state
             document.getElementById('empty-state-area').style.display = 'none';
             document.getElementById('stats-area').style.display = 'grid';
             document.getElementById('dashboard-main-content').style.display = 'grid';
 
-            // Hitung statistik
+            // 1. Kalkulasi Statistik Atas
             const total = data.length;
             
-            // Pencarian kolom status
-            let okCount = 0;
+            let autoSortedCount = 0;
             let reviewCount = 0;
-            let errorCount = 0;
+            let rejectCount = 0;
+            
+            let totalConfidence = 0;
+            let confidenceCounter = 0;
+            let totalConflicts = 0;
 
             data.forEach(row => {
-                // Status kolom bisa dari scan (status) atau sorting (status)
-                const status = (row.status || '').toUpperCase();
-                if (status === 'OK' || status === 'SUCCESS') {
-                    okCount++;
-                } else if (status === 'PERLU_DICEK' || status === 'NEEDS_REVIEW' || status === 'SKIPPED') {
+                // Mapping decision v3.0
+                const decision = (row.decision || row.classification_decision || '').toUpperCase();
+                
+                if (decision === 'AUTO_SORT') {
+                    autoSortedCount++;
+                } else if (decision === 'REVIEW_WITH_SUGGESTION' || decision === 'NEEDS_REVIEW') {
                     reviewCount++;
-                } else if (status === 'AUDIO_ERROR' || status === 'FAILED' || status === 'ERROR') {
-                    errorCount++;
+                } else if (decision === 'REJECT_BAD_AUDIO') {
+                    rejectCount++;
                 } else {
-                    okCount++; // Default jika tidak terdefinisi
+                    // Fallback status lama
+                    const status = (row.status || '').toUpperCase();
+                    if (status === 'OK' || status === 'SUCCESS') autoSortedCount++;
+                    else if (status === 'PERLU_DICEK' || status === 'SKIPPED') reviewCount++;
+                    else rejectCount++;
+                }
+
+                // Confidence score
+                const confRaw = row.confidence_score || row.confidence;
+                if (confRaw !== undefined && confRaw !== '') {
+                    const val = parseFloat(confRaw);
+                    if (!isNaN(val)) {
+                        totalConfidence += val;
+                        confidenceCounter++;
+                    }
+                }
+
+                // Deteksi Konflik
+                const conflicts = row.conflicts || '';
+                if (conflicts && conflicts.toUpperCase() !== 'NONE' && conflicts !== '()') {
+                    totalConflicts += conflicts.split(';').length;
                 }
             });
 
-            // Update DOM statistik
+            const avgConfidence = confidenceCounter > 0 ? Math.round(totalConfidence / confidenceCounter) : 0;
+
+            // Tulis nilai ke DOM
             document.getElementById('val-total').innerText = total;
-            document.getElementById('val-ok').innerText = okCount;
+            document.getElementById('val-ok').innerText = autoSortedCount;
             document.getElementById('val-review').innerText = reviewCount;
-            document.getElementById('val-error').innerText = errorCount;
+            document.getElementById('val-error').innerText = rejectCount;
+            document.getElementById('val-confidence').innerText = `${avgConfidence}%`;
+            document.getElementById('val-conflict').innerText = totalConflicts;
 
             // Load data ke tabel
             renderTable(data);
 
-            // Buat Charts
-            renderCharts(data, okCount, reviewCount, errorCount);
+            // Buat Grafik Visual
+            renderCharts(data, autoSortedCount, reviewCount, rejectCount);
         }
 
-        // Memuat baris tabel audit
         function renderTable(data) {
             const tbody = document.getElementById('table-body');
             tbody.innerHTML = '';
 
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">Tidak ada data yang cocok dengan pencarian / penyaringan</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 30px;">Tidak ada data yang cocok dengan penyaringan filter</td></tr>';
                 return;
             }
 
             data.forEach(row => {
                 const tr = document.createElement('tr');
                 
-                // Cari ID file
-                const id = row.id || row.file_id || 'N/A';
+                const filename = row.filename || row.clean_filename_suggestion || os_basename(row.source_path || row.file_path || '');
+                const mediaType = row.media_type || 'MUSIC';
+                const confidence = row.confidence_score || row.confidence || '0';
+                const decision = (row.decision || row.classification_decision || 'NEEDS_REVIEW').toUpperCase();
                 
-                // Cari nama file
-                const filename = row.filename || row.old_filename || 'N/A';
+                // Target folder routing
+                const targetFolder = row.target_folder || row.suggested_target_folder || row.review_folder || row.sorted_folder || '90_NEEDS_REVIEW/LOW_CONFIDENCE_MUSIC';
                 
-                // Cari durasi
-                const duration = row.duration_readable || row.duration_seconds || 'N/A';
-                
-                // Cari Tag
-                const artist = row.artist_tag || row.artist || row.detected_artist || '-';
-                const title = row.title_tag || row.title || row.detected_title || '-';
-                
-                // Cari Status
-                const rawStatus = (row.status || '').toUpperCase();
-                let statusBadge = '';
-                if (rawStatus === 'OK' || rawStatus === 'SUCCESS') {
-                    statusBadge = '<span class="badge badge-ok">OK</span>';
-                } else if (rawStatus === 'PERLU_DICEK' || rawStatus === 'NEEDS_REVIEW' || rawStatus === 'SKIPPED') {
-                    statusBadge = '<span class="badge badge-review">Review</span>';
+                // Badge keputusan
+                let decBadge = '';
+                if (decision === 'AUTO_SORT') {
+                    decBadge = '<span class="badge badge-autosort">Auto Sorted</span>';
+                } else if (decision === 'REVIEW_WITH_SUGGESTION') {
+                    decBadge = '<span class="badge badge-review">Saran Review</span>';
+                } else if (decision === 'REJECT_BAD_AUDIO') {
+                    decBadge = '<span class="badge badge-reject">Rejected</span>';
                 } else {
-                    statusBadge = '<span class="badge badge-error">Error</span>';
+                    decBadge = '<span class="badge badge-needsreview">Needs Review</span>';
                 }
 
-                // Cari catatan
-                const notes = row.notes || row.error_message || row.change_reason || 'Lolos verifikasi';
+                // Konflik / Peringatan
+                const conflicts = row.conflicts || '';
+                const warnings = row.warnings || row.warnings_summary || '';
+                let conflictText = '';
+                if (conflicts && conflicts.toUpperCase() !== 'NONE') {
+                    conflictText = `<span style="color: var(--accent-pink); font-weight:700;">[KONFLIK] ${conflicts}</span>`;
+                }
+                if (warnings && warnings.toUpperCase() !== 'NONE') {
+                    if (conflictText) conflictText += ' | ';
+                    conflictText += `<span style="color: var(--accent-yellow);">${warnings}</span>`;
+                }
+                if (!conflictText) conflictText = '<span style="color: var(--text-secondary); opacity: 0.5;">Aman</span>';
+
+                // Alasan rincian
+                const reason = row.classification_reason || row.classifier_reason || row.reason || row.notes || row.change_reason || '-';
 
                 tr.innerHTML = `
-                    <td><code>${id}</code></td>
-                    <td title="${filename}">${filename}</td>
-                    <td>${duration}</td>
-                    <td>${artist}</td>
-                    <td title="${title}">${title}</td>
-                    <td>${statusBadge}</td>
-                    <td title="${notes}">${notes}</td>
+                    <td title="${filename}"><strong>${filename}</strong></td>
+                    <td><code>${mediaType}</code></td>
+                    <td style="font-weight: 700; color: ${confidence >= 85 ? 'var(--accent-green)' : (confidence >= 60 ? 'var(--accent-yellow)' : 'var(--accent-red)')}">${confidence}%</td>
+                    <td>${decBadge}</td>
+                    <td title="${targetFolder}"><code>${targetFolder}</code></td>
+                    <td title="${conflicts || warnings}">${conflictText}</td>
+                    <td title="${reason}">${reason}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // Mengatur filter & search
-        const searchInput = document.getElementById('search-input');
-        const statusFilter = document.getElementById('status-filter');
+        function os_basename(path) {
+            return path.split(/[/\\]/).pop();
+        }
 
-        [searchInput, statusFilter].forEach(elem => {
+        // Advanced Filter & Search
+        const searchInput = document.getElementById('search-input');
+        const decisionFilter = document.getElementById('decision-filter');
+        const mediaFilter = document.getElementById('media-filter');
+        const conflictFilter = document.getElementById('conflict-filter');
+
+        [searchInput, decisionFilter, mediaFilter, conflictFilter].forEach(elem => {
             elem.addEventListener('input', applyFilters);
         });
 
         function applyFilters() {
-            const query = searchInput.value.toLowerCase().strip();
-            const statusVal = statusFilter.value;
+            const query = searchInput.value.toLowerCase().trim();
+            const decVal = decisionFilter.value;
+            const mediaVal = mediaFilter.value;
+            const conVal = conflictFilter.value;
 
             const filtered = allData.filter(row => {
-                const filename = (row.filename || row.old_filename || '').toLowerCase();
-                const artist = (row.artist_tag || row.artist || row.detected_artist || '').toLowerCase();
-                const title = (row.title_tag || row.title || row.detected_title || '').toLowerCase();
+                const filename = (row.filename || row.clean_filename_suggestion || '').toLowerCase();
+                const artist = (row.artist_tag || '').toLowerCase();
+                const title = (row.title_tag || '').toLowerCase();
+                const reason = (row.classification_reason || row.classifier_reason || row.reason || '').toLowerCase();
+                const folder = (row.target_folder || row.suggested_target_folder || row.review_folder || '').toLowerCase();
                 
-                const status = (row.status || '').toUpperCase();
+                const decision = (row.decision || row.classification_decision || '').toUpperCase();
+                const mediaType = (row.media_type || '').toUpperCase();
+                const conflicts = (row.conflicts || '').toUpperCase();
 
-                const matchesQuery = filename.includes(query) || artist.includes(query) || title.includes(query);
+                const matchesQuery = filename.includes(query) || artist.includes(query) || title.includes(query) || reason.includes(query) || folder.includes(query);
                 
-                let matchesStatus = true;
-                if (statusVal === 'OK') {
-                    matchesStatus = (status === 'OK' || status === 'SUCCESS');
-                } else if (statusVal === 'PERLU_DICEK') {
-                    matchesStatus = (status === 'PERLU_DICEK' || status === 'NEEDS_REVIEW' || status === 'SKIPPED');
-                } else if (statusVal === 'AUDIO_ERROR') {
-                    matchesStatus = (status === 'AUDIO_ERROR' || status === 'FAILED' || status === 'ERROR');
+                let matchesDecision = true;
+                if (decVal !== 'ALL') {
+                    matchesDecision = (decision === decVal);
                 }
 
-                return matchesQuery && matchesStatus;
+                let matchesMedia = true;
+                if (mediaVal !== 'ALL') {
+                    matchesMedia = (mediaType === mediaVal);
+                }
+
+                let matchesConflict = true;
+                if (conVal !== 'ALL') {
+                    if (conVal === 'YES') {
+                        matchesConflict = (conflicts && conflicts !== 'NONE' && conflicts !== '()');
+                    } else if (conVal === 'NO') {
+                        matchesConflict = (!conflicts || conflicts === 'NONE' || conflicts === '()');
+                    } else {
+                        matchesConflict = conflicts.includes(conVal);
+                    }
+                }
+
+                return matchesQuery && matchesDecision && matchesMedia && matchesConflict;
             });
 
             renderTable(filtered);
         }
 
-        // Render Grafik
-        function renderCharts(data, ok, review, error) {
+        // Render Grafik visual
+        function renderCharts(data, autoSorted, review, rejected) {
             // Hancurkan chart lama jika ada
-            if (genreChart) genreChart.destroy();
-            if (qualityChart) qualityChart.destroy();
+            if (decisionChart) decisionChart.destroy();
+            if (mediaChart) mediaChart.destroy();
+            if (folderChart) folderChart.destroy();
+            if (reasonChart) reasonChart.destroy();
 
-            // 1. Chart Kualitas (Doughnut Chart)
-            const ctxQuality = document.getElementById('qualityChart').getContext('2d');
-            qualityChart = new Chart(ctxQuality, {
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#e2e8f0', font: { family: 'Inter', size: 10 } }
+                    }
+                }
+            };
+
+            // 1. Chart Keputusan (Doughnut Chart)
+            const ctxDec = document.getElementById('decisionChart').getContext('2d');
+            decisionChart = new Chart(ctxDec, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Aman (OK)', 'Perlu Dicek (Ambigu)', 'Corrupt / Error'],
+                    labels: ['Auto Sorted (Aman)', 'Review / Cek Manual', 'Rejected (Bad Audio)'],
                     datasets: [{
-                        data: [ok, review, error],
-                        backgroundColor: ['#05ffc4', '#ffe600', '#ff3b69'],
-                        borderColor: '#0a0e17',
+                        data: [autoSorted, review, rejected],
+                        backgroundColor: ['#10b981', '#eab308', '#ec4899'],
+                        borderColor: '#070913',
                         borderWidth: 2
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { color: '#f3f4f6' }
-                        }
-                    }
-                }
+                options: chartOptions
             });
 
-            // 2. Chart Distribusi Genre / Kategori
-            // Kelompokkan usulan folder target
-            const folderCounts = {};
+            // 2. Chart Media Type (Bar Chart)
+            const mediaCounts = {};
             data.forEach(row => {
-                // Kolom folder bisa dari suggested_folder atau sorted_folder
-                let folder = row.suggested_folder || row.sorted_folder || 'Lagu/Pop';
-                
-                // Ambil folder kategori besarnya saja agar tidak terlalu banyak
-                if (folder.includes('/')) {
-                    folder = folder.split('/').pop();
-                }
-                if (folder.includes('_')) {
-                    folder = folder.split('_').slice(1).join(' ');
-                }
-                
-                folderCounts[folder] = (folderCounts[folder] || 0) + 1;
+                const mt = row.media_type || 'MUSIC';
+                mediaCounts[mt] = (mediaCounts[mt] || 0) + 1;
             });
+            const mediaLabels = Object.keys(mediaCounts);
+            const mediaValues = Object.values(mediaCounts);
 
-            // Ambil top 5 kategori terpopuler
-            const sortedFolders = Object.entries(folderCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
-
-            const labels = sortedFolders.map(x => x[0]);
-            const counts = sortedFolders.map(x => x[1]);
-
-            const ctxGenre = document.getElementById('genreChart').getContext('2d');
-            genreChart = new Chart(ctxGenre, {
+            const ctxMedia = document.getElementById('mediaChart').getContext('2d');
+            mediaChart = new Chart(ctxMedia, {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels: mediaLabels,
                     datasets: [{
-                        label: 'Jumlah Lagu',
-                        data: counts,
-                        backgroundColor: 'rgba(189, 0, 255, 0.6)',
-                        borderColor: '#bd00ff',
-                        borderWidth: 1
+                        data: mediaValues,
+                        backgroundColor: 'rgba(6, 182, 212, 0.65)',
+                        borderColor: '#06b6d4',
+                        borderWidth: 1.5,
+                        borderRadius: 6
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
+                    ...chartOptions,
+                    plugins: { legend: { display: false } },
                     scales: {
-                        x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#9ca3af' } },
-                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#9ca3af' } }
+                        x: { grid: { color: 'rgba(255, 255, 255, 0.04)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                        y: { grid: { color: 'rgba(255, 255, 255, 0.04)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
                     }
                 }
             });
-        }
 
-        // Polyfill untuk .strip()
-        String.prototype.strip = function() {
-            return this.trim();
-        };
+            // 3. Chart Folder Terpopuler (Horizontal Bar Chart)
+            const folderCounts = {};
+            data.forEach(row => {
+                let folder = row.target_folder || row.suggested_target_folder || row.review_folder || 'Unknown';
+                if (folder.includes('/')) folder = folder.split('/').pop();
+                folderCounts[folder] = (folderCounts[folder] || 0) + 1;
+            });
+            const sortedFolders = Object.entries(folderCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            const folderLabels = sortedFolders.map(x => x[0]);
+            const folderValues = sortedFolders.map(x => x[1]);
+
+            const ctxFolder = document.getElementById('folderChart').getContext('2d');
+            folderChart = new Chart(ctxFolder, {
+                type: 'bar',
+                data: {
+                    labels: folderLabels,
+                    datasets: [{
+                        data: folderValues,
+                        backgroundColor: 'rgba(168, 85, 247, 0.65)',
+                        borderColor: '#a855f7',
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255, 255, 255, 0.04)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                        y: { grid: { color: 'rgba(255, 255, 255, 0.04)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // 4. Chart Alasan Masuk Review (Pie Chart)
+            const reasonCounts = {};
+            data.forEach(row => {
+                const dec = (row.decision || row.classification_decision || '').toUpperCase();
+                if (dec !== 'AUTO_SORT') {
+                    const reason = row.classification_reason || row.classifier_reason || row.reason || row.notes || '';
+                    let summary = 'Sinyal Rendah / Ambigu';
+                    if (reason.includes('WhatsApp')) summary = 'File WhatsApp / PTT';
+                    else if (reason.includes('corrupt') || reason.includes('nol')) summary = 'File Corrupt / Nol';
+                    else if (reason.includes('bahasa') || reason.includes('LOKAL_INSUFFICIENT')) summary = 'Bukti Bahasa Kurang';
+                    else if (reason.includes('ambigu') || reason.includes('AMBIGUOUS')) summary = 'Nama File Ambigu';
+                    else if (reason.includes('METADATA_FILENAME')) summary = 'Konflik Tag vs Nama File';
+                    else if (reason.includes('DANGEROUS')) summary = 'Keyword Berbahaya';
+                    else if (reason.includes('durasi') || reason.includes('DURATION')) summary = 'Kelainan Durasi';
+                    else if (reason.includes('kosong') || reason.includes('MISSING_BOTH')) summary = 'Tag Metadata Kosong';
+                    
+                    reasonCounts[summary] = (reasonCounts[summary] || 0) + 1;
+                }
+            });
+            const reasonLabels = Object.keys(reasonCounts).slice(0, 5);
+            const reasonValues = Object.values(reasonCounts).slice(0, 5);
+
+            const ctxReason = document.getElementById('reasonChart').getContext('2d');
+            reasonChart = new Chart(ctxReason, {
+                type: 'pie',
+                data: {
+                    labels: reasonLabels.length > 0 ? reasonLabels : ['Tidak Ada File Review'],
+                    datasets: [{
+                        data: reasonValues.length > 0 ? reasonValues : [1],
+                        backgroundColor: ['#ec4899', '#f43f5e', '#a855f7', '#06b6d4', '#eab308', '#64748b'],
+                        borderColor: '#070913',
+                        borderWidth: 2
+                    }]
+                },
+                options: chartOptions
+            });
+        }
     </script>
 </body>
 </html>

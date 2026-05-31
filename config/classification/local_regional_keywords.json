@@ -1,0 +1,63 @@
+{
+  "_comment": "Kata kunci untuk mendeteksi musik lokal/daerah. Folder target di bawah 02_MASTER_LOCAL_REGIONAL/",
+  "strong_keywords": {
+    "02_MASTER_LOCAL_REGIONAL/01_SULAWESI_SELATAN/Bugis": [
+      "bugis", "ugi", "lontara", "mappideceng", "manini", "tomarilaleng",
+      "riolo", "sitobo lalang lino", "elong ugi", "bass makassar",
+      "tau riolo", "ana ugi", "puang", "daeng", "andi bugis",
+      "bosara", "badik bugis", "sinrilik bugis"
+    ],
+    "02_MASTER_LOCAL_REGIONAL/01_SULAWESI_SELATAN/Makassar": [
+      "makassar", "mangkasara", "karaeng", "anak makassar",
+      "elong makassar", "sombaya", "somba ri gowa", "anging mammiri",
+      "pantai losari", "fort rotterdam", "rangi-rangi", "manggaukang",
+      "sinrilik", "ganrang", "pakkio bunting"
+    ],
+    "02_MASTER_LOCAL_REGIONAL/01_SULAWESI_SELATAN/Mandar": [
+      "mandar", "polewali", "sendana", "elong mandar", "tomakaka",
+      "sandeq", "lipa sabbe", "pakkio mandar", "majene"
+    ],
+    "02_MASTER_LOCAL_REGIONAL/01_SULAWESI_SELATAN/Toraja": [
+      "toraja", "sa'dan", "tana toraja", "torajan", "rambu solo",
+      "rambu tuka", "tongkonan", "ma'randing", "massemba",
+      "pa'gellu", "ma'tintin", "tau tae"
+    ],
+    "02_MASTER_LOCAL_REGIONAL/01_SULAWESI_SELATAN/Campuran_Sulsel": [
+      "sulawesi selatan", "sulsel", "sulawesi", "celebes",
+      "kawasan timur", "passi", "luwu", "palopo", "bone",
+      "wajo", "soppeng", "enrekang", "barru", "pangkep", "maros",
+      "gowa", "takalar", "jeneponto", "bantaeng", "bulukumba",
+      "selayar", "sinjai"
+    ],
+    "02_MASTER_LOCAL_REGIONAL/02_PINRANG_LOCAL/Artis_Lokal_Pinrang": [
+      "pinrang", "suppa", "mattiro sompe", "duampanua", "mattiro bulu",
+      "mattiro deceng", "cempa", "patampanua"
+    ],
+    "02_MASTER_LOCAL_REGIONAL/03_INDONESIA_TIMUR": [
+      "ambon", "maluku", "papua", "ternate", "tidore", "sorong",
+      "flores", "ntt", "kupang", "timor", "ende", "maumere",
+      "nduga", "korowai"
+    ],
+    "02_MASTER_LOCAL_REGIONAL/04_TRADITIONAL_ETHNIC": [
+      "betawi", "sunda", "jawa", "javanese", "batak", "minang",
+      "minangkabau", "aceh", "kalimantan", "dayak", "banjar",
+      "madura", "bali", "balinese", "lombok", "sasak", "bima",
+      "sumbawa", "flores", "kaili", "gorontalo", "minahasa",
+      "menado", "manado", "ternate", "ambonese"
+    ]
+  },
+  "medium_keywords": {
+    "general_local": [
+      "daerah", "lokal", "tradisional", "adat", "budaya",
+      "nusantara", "etnik", "ethnic", "folk indonesia",
+      "lagu rakyat", "lagu daerah", "musik daerah",
+      "kebudayaan", "kearifan lokal"
+    ]
+  },
+  "parent_folder_hints": [
+    "sulsel", "sulawesi", "bugis", "makassar", "mandar", "toraja",
+    "pinrang", "bone", "wajo", "luwu", "palopo", "gowa", "lokal",
+    "daerah", "tradisional", "adat", "nusantara", "etnik", "folk"
+  ],
+  "language_hints": ["to", "elong", "puang", "karaeng", "andi ", "daeng "]
+}

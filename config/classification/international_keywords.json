@@ -1,0 +1,71 @@
+{
+  "_comment": "Kata kunci untuk deteksi musik internasional/barat. Jangan auto-sort hanya dari judul pendek bahasa Inggris.",
+  "western": {
+    "target_folder": "04_MASTER_INTERNATIONAL/01_WESTERN",
+    "genre_keywords": [
+      "pop western", "pop barat", "western pop",
+      "rock western", "rock barat", "western rock",
+      "r&b", "rnb", "hip hop", "hiphop", "hip-hop",
+      "jazz", "blues", "soul", "funk",
+      "country", "folk western",
+      "electronic", "edm", "house", "techno",
+      "metal", "heavy metal", "punk", "alternative rock",
+      "indie western", "indie pop"
+    ],
+    "parent_folder_hints": [
+      "western", "barat", "english song", "english music",
+      "lagu barat", "lagu inggris", "lagu bule",
+      "lagu internasional"
+    ]
+  },
+  "kpop_jpop": {
+    "target_folder": "04_MASTER_INTERNATIONAL/02_ASIAN",
+    "genre_keywords": [
+      "k-pop", "kpop", "k pop",
+      "j-pop", "jpop", "j pop",
+      "c-pop", "cpop", "mandopop",
+      "korean pop", "japanese pop",
+      "k-drama ost", "kdrama",
+      "anime song", "anisong", "ost anime"
+    ],
+    "parent_folder_hints": [
+      "kpop", "jpop", "korean", "japanese", "anime", "asia", "asian"
+    ]
+  },
+  "international_soundtrack": {
+    "target_folder": "04_MASTER_INTERNATIONAL/03_SOUNDTRACK_INTERNATIONAL",
+    "genre_keywords": [
+      "ost international", "movie soundtrack international",
+      "film score western", "game ost"
+    ]
+  },
+  "oldies_classic_western": {
+    "target_folder": "04_MASTER_INTERNATIONAL/04_OLDIES_CLASSIC",
+    "genre_keywords": [
+      "classic western", "oldies western", "golden oldies",
+      "classic rock", "classic pop",
+      "60s", "70s", "80s western"
+    ]
+  },
+  "english_stopwords": [
+    "the", "you", "me", "i", "love", "my", "your", "it", "on", "to",
+    "for", "with", "is", "are", "am", "was", "were", "that", "this",
+    "have", "has", "had", "dont", "cant", "of", "in", "at", "by",
+    "about", "we", "he", "she", "they", "them", "his", "her",
+    "go", "come", "do", "will", "would", "should", "could", "all",
+    "no", "yes", "not", "up", "down", "out", "so", "be", "been",
+    "one", "two", "if", "when", "what", "where", "who", "how",
+    "get", "got", "let", "say", "said", "know", "think", "see"
+  ],
+  "indonesian_stopwords": [
+    "yang", "dan", "di", "ke", "dari", "untuk", "dengan", "pada",
+    "oleh", "ini", "itu", "aku", "kamu", "dia", "mereka", "kita",
+    "kami", "kau", "cinta", "hati", "jiwa", "rindu", "kasih",
+    "sayang", "jangan", "bisa", "ada", "tidak", "ya", "sudah",
+    "belum", "adalah", "akan", "bukan", "mau", "saja", "lagi",
+    "pun", "juga", "karena", "ketika", "dimana", "kemana",
+    "siapa", "apa", "bagaimana", "semua", "setiap", "selalu",
+    "kembali", "lama", "baru", "indah", "cantik", "pergi",
+    "datang", "tahu", "ingin", "rasa", "bila", "kalau", "pernah"
+  ]
+}

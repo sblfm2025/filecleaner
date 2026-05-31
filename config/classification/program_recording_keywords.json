@@ -1,0 +1,51 @@
+{
+  "_comment": "Kata kunci program recording. Auto-sort HANYA jika durasi > 15 menit DAN ada keyword ini.",
+  "talkshow": {
+    "target_folder": "08_MASTER_PROGRAM_RECORDINGS/01_TALKSHOW",
+    "keywords": [
+      "talkshow", "talk show", "obrolan", "perbincangan",
+      "dialog interaktif", "ngobrol", "bincang-bincang"
+    ]
+  },
+  "interview": {
+    "target_folder": "08_MASTER_PROGRAM_RECORDINGS/02_INTERVIEW",
+    "keywords": [
+      "interview", "wawancara", "tanya jawab", "narasumber",
+      "bincang", "bincang dengan", "dialog"
+    ]
+  },
+  "news_bulletin": {
+    "target_folder": "08_MASTER_PROGRAM_RECORDINGS/03_NEWS_BULLETIN",
+    "keywords": [
+      "berita", "bulletin", "buletin", "news", "liputan",
+      "reportase", "siaran berita", "kabar", "update berita",
+      "headlines", "head lines"
+    ]
+  },
+  "podcast": {
+    "target_folder": "08_MASTER_PROGRAM_RECORDINGS/04_PODCAST",
+    "keywords": [
+      "podcast", "pod cast", "episode", "eps", "ep.",
+      "series", "season"
+    ]
+  },
+  "voxpop": {
+    "target_folder": "08_MASTER_PROGRAM_RECORDINGS/05_VOXPOP_FIELD_RECORDING",
+    "keywords": [
+      "voxpop", "vox pop", "liputan lapangan", "rekaman lapangan",
+      "suara warga", "field recording"
+    ]
+  },
+  "longform": {
+    "target_folder": "08_MASTER_PROGRAM_RECORDINGS/06_LONGFORM_ARCHIVE",
+    "keywords": [
+      "full program", "full episode", "full show", "siaran penuh",
+      "rekaman lengkap", "arsip siaran", "archive siaran"
+    ]
+  },
+  "min_duration_for_auto_sort": 900,
+  "parent_folder_hints": [
+    "program", "siaran", "rekaman", "talkshow", "podcast",
+    "berita", "news", "wawancara", "interview", "dialog"
+  ]
+}

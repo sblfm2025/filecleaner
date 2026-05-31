@@ -1,0 +1,76 @@
+{
+  "_comment": "Whitelist artis lokal Indonesia dan Sulsel. Format: folder_target -> [daftar nama artis lowercase]",
+  "02_MASTER_LOCAL_REGIONAL/01_SULAWESI_SELATAN/Bugis": [
+    "ancha", "iwan dc", "hj. nurbaya", "rahmat tahir",
+    "ikha mahendra", "titi kamal bugis", "andi meriem mattalatta",
+    "andi nurhidayat", "nurbaya azis", "wahyuni bugis"
+  ],
+  "02_MASTER_LOCAL_REGIONAL/01_SULAWESI_SELATAN/Makassar": [
+    "tommy syamsuri", "a. nurhidayat", "m. arief", "siti nurmala",
+    "rara makassar", "daeng tino", "andi patta"
+  ],
+  "02_MASTER_LOCAL_REGIONAL/01_SULAWESI_SELATAN/Campuran_Sulsel": [
+    "iwan fals sulsel", "d'group", "sbl artist"
+  ],
+  "02_MASTER_LOCAL_REGIONAL/02_PINRANG_LOCAL/Artis_Lokal_Pinrang": [
+    "artis pinrang", "komunitas pinrang", "group pinrang"
+  ],
+  "01_MASTER_MUSIC/10_UNKNOWN_RELEASE_TYPE": {
+    "_comment": "Artis Indonesia terkenal yang belum terkategorikan genre spesifik"
+  },
+  "pop_indonesia_artists": [
+    "tulus", "andmesh", "andmesh kamaleng", "mahalini", "nadin amizah",
+    "tiara andini", "aisyah istri rasulullah", "lyodra", "raisa",
+    "isyana sarasvati", "rossa", "bunga citra lestari", "bcl",
+    "agnes monica", "agnes mo", "kerispatih", "ungu", "d'masiv",
+    "noah", "peterpan", "sheila on 7", "so7", "shela on 7",
+    "armada", "wali band", "repvblik", "five minutes",
+    "geisha", "the overtunes", "adera", "payung teduh",
+    "tab", "yura yunita", "hivi", "fourtwnty",
+    "fiersa besari", "ndarboy genk", "happy asmara",
+    "nella kharisma", "denny caknan", "vita alvia",
+    "ria ricis", "lagu anak", "bimbo", "nike ardilla",
+    "krisdayanti", "kd", "ruth sahanaya", "titi dj",
+    "celine dion indonesia", "dato siti nurhaliza"
+  ],
+  "rock_alternative_indonesia": [
+    "slank", "dewa 19", "dewa", "padi", "gigi band", "gigi",
+    "andra and the backbone", "andra", "j-rocks", "jrocks",
+    "the rock", "nidji", "naif", "last child", "seventeen band",
+    "radja", "wings band", "superman is dead", "sid",
+    "vierra", "smash", "drive band", "weezer indonesia",
+    "god bless", "elpiji", "edane", "roxx", "power metal",
+    "beside", "siksakubur", "burgerkill", "jasad", "jeruji",
+    "deadsquad", "death vomit", "kill the drama"
+  ],
+  "dangdut_artists": [
+    "rhoma irama", "rhoma", "elvy sukaesih", "mansyur s",
+    "meggy z", "itje trisnawati", "camelia malik",
+    "vetty vera", "caca handika", "hamdan att",
+    "iis dahlia", "ikke nurjanah", "anisa rahma",
+    "zaskia gotik", "inul daratista", "via vallen",
+    "nella kharisma", "happy asmara", "yeni inka",
+    "ratna antika", "safira inema", "esa risty",
+    "denny caknan", "vita alvia", "ndarboy genk"
+  ],
+  "jazz_rnb_indonesia": [
+    "tompi", "afgan", "judika", "sandhy sondoro",
+    "raisa", "chicco jerikho", "mario teguh",
+    "dira sugandi", "once mekel", "once",
+    "monita tahalea", "syahrini", "gugun blues shelter"
+  ],
+  "tembang_kenangan_artists": [
+    "koes plus", "koes bersaudara", "bimbo", "chrisye",
+    "guruh soekarnoputra", "ebiet g ade", "iwan fals",
+    "franky sahilatua", "bambang", "nicky astria",
+    "arie koesmiran", "titiek puspa", "hetty koes endang",
+    "pance pondaag", "broery marantika", "obbie mesakh",
+    "fariz rm", "arie wibowo", "mus mudjiono"
+  ],
+  "anak_anak_artists": [
+    "sherina", "joshua", "tasya", "trio kwek kwek",
+    "enno lerian", "sahabat", "chikita meidy",
+    "dhea ananda", "lagu anak", "lagu anak-anak",
+    "taman kanak", "tk dan paud"
+  ]
+}

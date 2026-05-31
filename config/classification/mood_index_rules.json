@@ -1,0 +1,68 @@
+{
+  "_comment": "Aturan mapping mood ke subfolder index M3U. Kata kunci dideteksi dari judul/filename.",
+  "mood_keyword_to_index": {
+    "03_MOOD_INDEX/Happy_Ceria.m3u": [
+      "happy", "ceria", "bahagia", "gembira", "riang",
+      "senang", "fun", "party", "pesta", "joget",
+      "ayo", "semangat", "bersemangat", "bangkit"
+    ],
+    "03_MOOD_INDEX/Sad_Galau.m3u": [
+      "sad", "galau", "sedih", "rindu", "kangen",
+      "sendu", "pilu", "duka", "menangis", "air mata",
+      "patah hati", "broken heart", "perpisahan", "kepergian",
+      "kehilangan", "ditinggal", "berjarak", "jauh"
+    ],
+    "03_MOOD_INDEX/Romantic_Cinta.m3u": [
+      "love", "cinta", "sayang", "romantic", "romantis",
+      "kasih", "rindu", "suka", "hatiku", "hatimu",
+      "kekasih", "darling", "honey", "sweetheart",
+      "jatuh cinta", "falling in love", "you and me"
+    ],
+    "03_MOOD_INDEX/Relax_Santai.m3u": [
+      "relax", "santai", "calm", "tenang", "damai",
+      "peaceful", "chill", "slow", "lembut", "soft",
+      "mengalir", "flow", "breeze", "angin"
+    ],
+    "03_MOOD_INDEX/Upbeat_Energik.m3u": [
+      "upbeat", "energi", "energic", "kuat", "power",
+      "rock", "keras", "beat", "groove", "pump",
+      "drive", "push", "fire", "burn", "heat"
+    ],
+    "03_MOOD_INDEX/Nostalgia_Kenangan.m3u": [
+      "nostalgia", "kenangan", "memories", "masa lalu",
+      "dulu", "masa kecil", "childhood", "remember",
+      "teringat", "throwback", "classic", "legend"
+    ],
+    "03_MOOD_INDEX/Motivasi_Inspirasi.m3u": [
+      "semangat", "bangkit", "motivasi", "inspirasi",
+      "juara", "menang", "victory", "champion",
+      "rise", "fight", "struggle", "berjuang", "teguh",
+      "maju", "sukses", "berhasil", "ayo bisa"
+    ],
+    "03_MOOD_INDEX/Rohani_Spiritual.m3u": [
+      "syukur", "doa", "prayer", "ibadah", "bersyukur",
+      "spiritual", "rohani", "iman", "taqwa",
+      "berkah", "rahmat", "ridho", "ikhlas"
+    ]
+  },
+  "energy_keyword_to_index": {
+    "06_ENERGY_INDEX/High_Energy.m3u": [
+      "dance", "party", "upbeat", "hard", "fast", "rave", "edm"
+    ],
+    "06_ENERGY_INDEX/Medium_Energy.m3u": [
+      "mid tempo", "moderate", "groove"
+    ],
+    "06_ENERGY_INDEX/Low_Energy.m3u": [
+      "ballad", "slow", "calm", "soft", "acoustic", "unplugged"
+    ]
+  },
+  "rotation_keyword_to_index": {
+    "12_ROTATION_LEVEL_INDEX/Heavy_Rotation.m3u": [
+      "hit", "chart", "number one", "top chart", "viral"
+    ],
+    "12_ROTATION_LEVEL_INDEX/Regular_Rotation.m3u": [],
+    "12_ROTATION_LEVEL_INDEX/Light_Rotation.m3u": [
+      "classic", "old", "lama", "kenangan", "archive"
+    ]
+  }
+}

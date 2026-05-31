@@ -15,6 +15,7 @@ write_basic_metadata_to_batch = import_module_by_path("write_basic_metadata", "s
 sort_to_radio_folders = import_module_by_path("sort_to_radio_folders", "scripts/05_sort_to_radio_folders.py").sort_to_radio_folders
 detect_possible_duplicates = import_module_by_path("detect_possible_duplicates", "scripts/06_detect_possible_duplicates.py").detect_possible_duplicates
 validate_output_library = import_module_by_path("validate_output_library", "scripts/07_validate_output_library.py").validate_output_library
+build_index_catalog = import_module_by_path("build_index_catalog", "scripts/08_build_index_catalog.py").main
 
 def run_full_pipeline(
     batch_id: str = "",
@@ -26,6 +27,7 @@ def run_full_pipeline(
     run_sort: bool = False,
     run_duplicates: bool = False,
     run_validate: bool = False,
+    run_index: bool = False,
     resume: bool = False
 ) -> None:
     """
@@ -47,7 +49,7 @@ def run_full_pipeline(
     input_dir_cfg = batch_cfg.get("input_dir", "data/input")
     input_dir = input_dir if input_dir else input_dir_cfg
     output_batch_dir = batch_cfg.get("output_batch_dir", "data/output_batch")
-    final_output_dir = batch_cfg.get("final_output_dir", "data/output/RADIO_AUDIO_LIBRARY")
+    final_output_dir = batch_cfg.get("final_output_dir", "data/output/RADIO_AUDIO_MASTER_LIBRARY")
     logs_dir = batch_cfg.get("logs_dir", "data/logs")
     
     # Jalankan langkah-langkah yang diaktifkan
@@ -124,6 +126,13 @@ def run_full_pipeline(
             logs_dir=logs_dir
         )
 
+    # H. BUILD INDEX & PLAYLIST CATALOG v3.0
+    if run_index:
+        build_index_catalog(
+            final_output_dir=final_output_dir,
+            logs_dir=logs_dir
+        )
+
     # 2. Susun Statistik untuk Laporan Summary Eksekutif
     batch_mgr = BatchManager(logs_dir)
     batch_records = batch_mgr.get_all_records_for_batch(batch_id)
@@ -142,7 +151,7 @@ def run_full_pipeline(
     needs_review_count = 0
     for r in batch_records:
         target_path = r.get("target_path", "")
-        if target_path and "90_PERLU_DICEK" in target_path:
+        if target_path and "90_NEEDS_REVIEW" in target_path:
             needs_review_count += 1
             
     bad_audio_count = scanned_error
@@ -177,7 +186,7 @@ def run_full_pipeline(
         "duplicates_report_path": os.path.join(logs_dir, "possible_duplicates_report.csv"),
         "validation_report_path": os.path.join(logs_dir, "output_validation_report.csv"),
         
-        "needs_review_folder_name": "90_PERLU_DICEK",
+        "needs_review_folder_name": "90_NEEDS_REVIEW",
         "duplicates_report_name": "possible_duplicates_report.csv"
     }
     
@@ -198,5 +207,6 @@ if __name__ == "__main__":
         run_metadata=False,
         run_sort=False,
         run_duplicates=True,
-        run_validate=True
+        run_validate=True,
+        run_index=True
     )

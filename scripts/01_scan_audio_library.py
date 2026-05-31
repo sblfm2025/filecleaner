@@ -6,19 +6,20 @@ from typing import List, Dict, Any
 from src.utils import load_json_config, setup_logger
 from src.audio_reader import read_audio_metadata
 from src.filename_cleaner import clean_filename
-from src.audio_classifier import classify_audio
+from src.audio_classifier import classify_audio_file
 from src.batch_manager import BatchManager
 from src.report_writer import write_csv_report, convert_csv_to_xlsx
 
-# Kolom yang akan dimasukkan ke audio_scan_report.csv
+# Kolom yang akan dimasukkan ke audio_scan_report.csv v3.0
 SCAN_COLUMNS = [
     "id", "batch_id", "original_path", "filename", "extension", "file_size_mb",
     "modified_time", "duration_seconds", "duration_readable", "bitrate", "sample_rate",
     "title_tag", "artist_tag", "album_tag", "genre_tag", "year_tag",
     "clean_filename_suggestion", "detected_artist_from_filename",
     "detected_title_from_filename", "parent_folder",
-    "suggested_folder", "confidence_score", "decision", "signals_summary",
-    "warnings_summary", "classifier_reason", "status", "notes"
+    "media_type", "master_bucket", "suggested_target_folder", "review_folder",
+    "confidence_score", "decision", "signals", "warnings", "conflicts",
+    "classifier_reason", "status", "notes"
 ]
 
 
@@ -95,25 +96,28 @@ def scan_audio_library(
                 filename, cleaner_rules, meta["artist_tag"], meta["title_tag"]
             )
             
-            # ── KLASIFIKASI MENGGUNAKAN CLASSIFIER MULTI-STAGE ──────────────
-            clf_result = classify_audio(
+            # ── KLASIFIKASI MENGGUNAKAN CLASSIFIER MULTI-STAGE v3.0 ─────────
+            clf_result = classify_audio_file(
                 filename=cleaned_name,
                 artist_tag=meta["artist_tag"],
                 title_tag=meta["title_tag"],
                 genre_tag=meta["genre_tag"],
                 duration_seconds=meta["duration_seconds"],
                 parent_folder=parent_folder,
+                album_tag=meta["album_tag"],
+                year_tag=meta["year_tag"],
                 config=classifier_config
             )
             
-            suggested_folder = clf_result["target_folder"]
+            media_type = clf_result["media_type"]
+            master_bucket = clf_result["master_bucket"]
+            suggested_target_folder = clf_result["target_folder"]
+            review_folder = clf_result["review_folder"]
             confidence_score = clf_result["confidence_score"]
             decision = clf_result["decision"]
-            signals_summary = "; ".join([
-                f"{s['source']}={s['points']}" for s in clf_result["signals"]
-                if s.get("strength") != "INFO"
-            ])
-            warnings_summary = " | ".join(clf_result["warnings"]) if clf_result["warnings"] else ""
+            signals = "; ".join(clf_result.get("signals", []))
+            warnings_val = "; ".join(clf_result.get("warnings", []))
+            conflicts = "; ".join(clf_result.get("conflicts", []))
             classifier_reason = clf_result["reason"]
             
             # Tentukan status file
@@ -162,11 +166,15 @@ def scan_audio_library(
                 "detected_artist_from_filename": det_artist,
                 "detected_title_from_filename": det_title,
                 "parent_folder": parent_folder,
-                "suggested_folder": suggested_folder,
+                "media_type": media_type,
+                "master_bucket": master_bucket,
+                "suggested_target_folder": suggested_target_folder,
+                "review_folder": review_folder,
                 "confidence_score": confidence_score,
                 "decision": decision,
-                "signals_summary": signals_summary,
-                "warnings_summary": warnings_summary,
+                "signals": signals,
+                "warnings": warnings_val,
+                "conflicts": conflicts,
                 "classifier_reason": classifier_reason,
                 "status": status,
                 "notes": notes

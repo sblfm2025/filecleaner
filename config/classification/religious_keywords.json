@@ -1,0 +1,79 @@
+{
+  "_comment": "Kata kunci untuk deteksi konten religi. Bedakan lagu religi vs non-lagu religi.",
+  "islamic_songs": {
+    "target_folder": "03_MASTER_RELIGIOUS/01_ISLAMIC_SONGS",
+    "media_type": "RELIGIOUS_MUSIC",
+    "keywords": [
+      "sholawat", "sholawat nabi", "selawat", "salawat",
+      "nasyid", "nasyd", "nasheed",
+      "qasidah", "kasidah", "qosidah",
+      "hadroh", "hadrah", "rebana",
+      "marawis", "samrah",
+      "religi", "religious",
+      "islami", "islamic",
+      "lagu islam", "lagu religi", "lagu muslim",
+      "lagu lebaran", "lagu idul",
+      "ramadan song", "eid song",
+      "asma allah", "bismillah song",
+      "ya rasulullah", "ya nabi",
+      "alhamdulillah song", "subhanallah song"
+    ]
+  },
+  "quran_recitation": {
+    "target_folder": "03_MASTER_RELIGIOUS/02_QURAN_RECITATION",
+    "media_type": "RELIGIOUS_NON_MUSIC",
+    "keywords": [
+      "murottal", "murotal", "murattal",
+      "quran", "qur'an", "al quran", "alquran",
+      "tilawah", "tilawat",
+      "tartil", "tarteel",
+      "surah", "surat al", "ayat",
+      "hafiz", "hafidz", "hafidzah",
+      "fajar", "subuh bacaan",
+      "juz", "juz amma"
+    ]
+  },
+  "tausiyah_ceramah": {
+    "target_folder": "03_MASTER_RELIGIOUS/03_SHORT_TAUSIYAH",
+    "media_type": "RELIGIOUS_NON_MUSIC",
+    "keywords": [
+      "tausiyah", "tausiah",
+      "ceramah", "ceramah agama",
+      "khutbah", "kultum",
+      "pengajian",
+      "tabligh",
+      "dakwah",
+      "kajian", "kajian islam",
+      "ustaz", "ustadz", "ustazah",
+      "kyai", "kiai", "ulama"
+    ]
+  },
+  "ramadan_eid": {
+    "target_folder": "03_MASTER_RELIGIOUS/04_RAMADAN_EID",
+    "media_type": "RELIGIOUS_MUSIC",
+    "keywords": [
+      "ramadan", "ramadhan",
+      "idul fitri", "lebaran", "idul adha",
+      "takbiran", "takbir",
+      "marhaban ya ramadan",
+      "selamat hari raya",
+      "maaf lahir batin",
+      "tarhim",
+      "sahur",
+      "buka puasa"
+    ]
+  },
+  "religious_background": {
+    "target_folder": "03_MASTER_RELIGIOUS/05_RELIGIOUS_BACKGROUND",
+    "media_type": "RELIGIOUS_MUSIC",
+    "keywords": [
+      "religi instrumental", "background islami",
+      "musik religi", "musik islami",
+      "background quran", "alunan quran"
+    ]
+  },
+  "parent_folder_hints": [
+    "religi", "islami", "islamic", "quran", "sholawat", "nasyid",
+    "ceramah", "tausiyah", "dakwah", "kajian", "ramadan", "lebaran"
+  ]
+}

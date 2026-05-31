@@ -9,10 +9,12 @@ from src.metadata_writer import write_basic_metadata
 from src.batch_manager import BatchManager
 from src.report_writer import write_csv_report, convert_csv_to_xlsx
 
-# Kolom untuk laporan metadata
+# Kolom untuk laporan metadata v3.0
 METADATA_COLUMNS = [
     "file_path", "old_title", "new_title", "old_artist", "new_artist",
-    "old_album", "new_album", "old_genre", "new_genre", "status", "notes"
+    "old_album", "new_album", "old_genre", "new_genre", 
+    "metadata_write_mode", "classification_decision", "metadata_skipped_reason",
+    "status", "notes"
 ]
 
 def write_basic_metadata_to_batch(
@@ -98,6 +100,9 @@ def write_basic_metadata_to_batch(
                 "old_artist": "", "new_artist": "",
                 "old_album": "", "new_album": "",
                 "old_genre": "", "new_genre": "",
+                "metadata_write_mode": "RESUME_SKIP",
+                "classification_decision": "UNKNOWN",
+                "metadata_skipped_reason": "Sesi sebelumnya sudah sukses",
                 "status": "SKIPPED",
                 "notes": "Dilewati karena sudah selesai pada sesi sebelumnya (Resume)"
             })
@@ -107,40 +112,55 @@ def write_basic_metadata_to_batch(
         scan_info = scan_data_map.get(src_path, {})
         det_artist = scan_info.get("detected_artist_from_filename", "")
         det_title = scan_info.get("detected_title_from_filename", "")
-        suggested_folder = scan_info.get("suggested_folder", "")
+        suggested_folder = scan_info.get("suggested_target_folder", "")
+        media_type = scan_info.get("media_type", "UNKNOWN")
+        decision = scan_info.get("decision", "NEEDS_REVIEW")
         
-        # Cari rekomendasi genre berdasarkan usulan folder
-        suggested_genre = ""
-        if suggested_folder:
-            if "Musik_Lokal_Daerah" in suggested_folder or "01_MUSIK_LOKAL_DAERAH" in suggested_folder:
-                suggested_genre = meta_defaults.get("default_genre_local", "Musik Lokal Daerah")
-            elif "Musik_Indonesia" in suggested_folder or "02_MUSIK_INDONESIA" in suggested_folder:
-                suggested_genre = meta_defaults.get("default_genre_music", "Musik")
-            elif "Jingle" in suggested_folder or "Jingle_Station_ID" in suggested_folder:
-                suggested_genre = meta_defaults.get("default_genre_jingle", "Jingle")
-            elif "Bumper" in suggested_folder or "Bumper_Program" in suggested_folder:
-                suggested_genre = meta_defaults.get("default_genre_bumper", "Bumper")
-            elif "Iklan" in suggested_folder:
-                suggested_genre = meta_defaults.get("default_genre_iklan", "Iklan")
-            elif "ILM" in suggested_folder:
-                suggested_genre = meta_defaults.get("default_genre_ilm", "Iklan Layanan Masyarakat")
-            elif "PROGRAM_REKAMAN" in suggested_folder or "05_PROGRAM_REKAMAN" in suggested_folder:
-                suggested_genre = meta_defaults.get("default_genre_program", "Program Rekaman")
+        # Tentukan mode penulisan metadata
+        metadata_write_mode = "STANDARD"
+        metadata_skipped_reason = ""
+        
+        # Aturan v3.0: Skip penulisan tag lagu untuk non-musik atau tipe unknown dengan keputusan NEEDS_REVIEW
+        is_non_music = media_type in ("RADIO_ASSET", "COMMERCIAL_AD", "PUBLIC_SERVICE", "INSTRUMENTAL_BED", "PROGRAM_RECORDING")
+        is_unknown_or_low_confidence = (decision == "NEEDS_REVIEW" or not det_artist or not det_title)
+        
+        if is_non_music:
+            metadata_write_mode = "SKIP"
+            metadata_skipped_reason = f"Aset non-musik terdeteksi ({media_type})"
+        elif is_unknown_or_low_confidence:
+            metadata_write_mode = "SKIP"
+            metadata_skipped_reason = f"Tipe unknown atau confidence klasifikasi rendah ({decision})"
 
         # Baca metadata lama sebelum ditulis (untuk laporan perbandingan)
         old_meta = read_audio_metadata(target_path)
         
-        # Tulis metadata baru secara aman
-        status, notes = write_basic_metadata(
-            target_path,
-            artist=det_artist,
-            title=det_title,
-            defaults=meta_defaults,
-            suggested_genre=suggested_genre
-        )
-        
-        # Baca kembali metadata yang baru ditulis
-        new_meta = read_audio_metadata(target_path)
+        if metadata_write_mode == "SKIP":
+            status = "SKIPPED"
+            notes = metadata_skipped_reason
+            new_meta = old_meta
+        else:
+            # Cari rekomendasi genre berdasarkan usulan folder
+            suggested_genre = ""
+            if suggested_folder:
+                if "02_MASTER_LOCAL_REGIONAL" in suggested_folder:
+                    suggested_genre = meta_defaults.get("default_genre_local", "Musik Lokal Daerah")
+                elif "01_MASTER_MUSIC" in suggested_folder:
+                    suggested_genre = meta_defaults.get("default_genre_music", "Musik")
+                elif "04_MASTER_INTERNATIONAL" in suggested_folder:
+                    suggested_genre = meta_defaults.get("default_genre_intl", "Musik Internasional")
+                elif "03_MASTER_RELIGIOUS" in suggested_folder:
+                    suggested_genre = meta_defaults.get("default_genre_religious", "Musik Religi")
+            
+            # Tulis metadata baru secara aman
+            status, notes = write_basic_metadata(
+                target_path,
+                artist=det_artist,
+                title=det_title,
+                defaults=meta_defaults,
+                suggested_genre=suggested_genre
+            )
+            # Baca kembali metadata yang baru ditulis
+            new_meta = read_audio_metadata(target_path)
         
         metadata_row = {
             "file_path": target_path,
@@ -152,6 +172,9 @@ def write_basic_metadata_to_batch(
             "new_album": new_meta.get("album_tag", ""),
             "old_genre": old_meta.get("genre_tag", ""),
             "new_genre": new_meta.get("genre_tag", ""),
+            "metadata_write_mode": metadata_write_mode,
+            "classification_decision": decision,
+            "metadata_skipped_reason": metadata_skipped_reason,
             "status": status,
             "notes": notes
         }

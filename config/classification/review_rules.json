@@ -1,0 +1,37 @@
+{
+  "_comment": "Aturan routing file ke subfolder 90_NEEDS_REVIEW berdasarkan jenis konflik atau masalah.",
+  "review_subfolders": {
+    "unknown_artist_title": "90_NEEDS_REVIEW/01_UNKNOWN_ARTIST_TITLE",
+    "low_confidence": "90_NEEDS_REVIEW/02_LOW_CONFIDENCE_CATEGORY",
+    "conflicting_signals": "90_NEEDS_REVIEW/03_CONFLICTING_SIGNALS",
+    "parent_folder_only": "90_NEEDS_REVIEW/04_PARENT_FOLDER_ONLY_MATCH",
+    "metadata_filename_conflict": "90_NEEDS_REVIEW/05_METADATA_FILENAME_CONFLICT",
+    "possible_non_music": "90_NEEDS_REVIEW/06_POSSIBLE_NON_MUSIC",
+    "local_language_uncertain": "90_NEEDS_REVIEW/07_LOCAL_LANGUAGE_UNCERTAIN",
+    "manual_listening_required": "90_NEEDS_REVIEW/08_MANUAL_LISTENING_REQUIRED",
+    "duration_anomaly": "90_NEEDS_REVIEW/09_DURATION_ANOMALY",
+    "unsupported_unknown_type": "90_NEEDS_REVIEW/10_UNSUPPORTED_OR_UNKNOWN_TYPE"
+  },
+  "routing_rules": {
+    "no_artist_no_title_no_pattern": "unknown_artist_title",
+    "confidence_below_threshold": "low_confidence",
+    "conflict_metadata_vs_filename": "metadata_filename_conflict",
+    "conflict_parent_folder_vs_content": "parent_folder_only",
+    "conflict_duration_vs_type": "duration_anomaly",
+    "conflict_multiple_signals": "conflicting_signals",
+    "ambiguous_filename_only": "unknown_artist_title",
+    "possible_sfx_or_noise": "possible_non_music",
+    "local_only_one_signal": "local_language_uncertain",
+    "bad_audio_file": "unsupported_unknown_type"
+  },
+  "conflict_type_descriptions": {
+    "METADATA_FILENAME_CONFLICT": "Tag metadata Artist/Title tidak cocok dengan nama file",
+    "PARENT_FOLDER_ONLY_MATCH": "Hanya parent folder yang cocok, tidak ada bukti lain",
+    "DURATION_CATEGORY_CONFLICT": "Durasi tidak sesuai dengan tipe yang terdeteksi",
+    "DANGEROUS_KEYWORD_PRESENT": "Keyword berbahaya terdeteksi, tidak cukup bukti lain",
+    "CONFLICTING_GENRE_SIGNALS": "Sinyal genre/artis saling bertentangan",
+    "AMBIGUOUS_FILENAME": "Nama file tidak informatif (track, audio, whatsapp, dll)",
+    "MISSING_BOTH_TAGS": "Kedua tag Artist dan Title kosong atau tidak valid",
+    "LOCAL_INSUFFICIENT_EVIDENCE": "Hanya satu bukti untuk konten lokal (butuh minimal 2)"
+  }
+}

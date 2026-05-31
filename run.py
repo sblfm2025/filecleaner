@@ -8,7 +8,8 @@ from src.utils import setup_logger, load_json_config, import_module_by_path
 
 # Impor pipeline utama secara dinamis untuk menghindari syntax error nama file numerik
 run_full_pipeline = import_module_by_path("full_pipeline", "scripts/99_full_pipeline.py").run_full_pipeline
-generate_index = import_module_by_path("generate_index", "scripts/08_generate_index.py").generate_index
+build_index_catalog = import_module_by_path("build_index_catalog", "scripts/08_build_index_catalog.py").main
+run_classification_audit = import_module_by_path("run_classification_audit", "scripts/09_classify_and_report.py").run_classification_audit
 
 def show_welcome_banner():
     """Menampilkan banner pembuka di terminal."""
@@ -48,7 +49,7 @@ def interactive_menu():
 
     while True:
         print("\n" + "=" * 55)
-        print("          MENU UTAMA RADIO_MUSIC_CLEANER")
+        print("          MENU UTAMA RADIO_MUSIC_CLEANER v3.0")
         print("=" * 55)
         print(f" Folder Input Aktif: {input_dir}")
         print(f" ID Batch Aktif    : {batch_id}")
@@ -62,8 +63,8 @@ def interactive_menu():
         print(" 7. Susun File ke Folder Kategori (Sort)        *PROSES FISIK*")
         print(" 8. Deteksi & Kumpulkan Berkas Duplikat (Duplicates)")
         print(" 9. Audit Validasi Kualitas Library Akhir (Validate)")
-        print(" 10. Buat Index Genre/Artis M3U & CSV (Generate Index)")
-        print(" 11. Laporan Klasifikasi (Classification Report)")
+        print(" 10. Bangun Katalog Master & Playlists M3U (Catalog Builder)")
+        print(" 11. Audit Klasifikasi Standalone (Standalone Audit)")
         print(" 12. Panduan Finishing (Mp3tag & MusicBrainz Picard)")
         print(" 13. Keluar")
         print("=" * 55)
@@ -119,28 +120,22 @@ def interactive_menu():
         elif choice == "9":
             run_full_pipeline(batch_id=batch_id, input_dir=input_dir, run_validate=True)
         elif choice == "10":
-            print("\n[INFO] Membuat index genre/artis M3U & CSV...")
+            print("\n[INFO] Membangun katalog master radio dan playlist logis M3U...")
             batch_cfg2 = load_json_config("config/batch_settings.json", {})
-            final_out = batch_cfg2.get("final_output_dir", "data/output/RADIO_AUDIO_LIBRARY")
+            final_out = batch_cfg2.get("final_output_dir", "data/output/RADIO_AUDIO_MASTER_LIBRARY")
             logs = batch_cfg2.get("logs_dir", "data/logs")
-            result = generate_index(
-                batch_id=batch_id,
+            result = build_index_catalog(
                 final_output_dir=final_out,
-                logs_dir=logs,
-                index_dir="data/index"
+                logs_dir=logs
             )
-            print(f"[OK] Index selesai: {result.get('total', 0)} berkas | {result.get('genres', 0)} genre | {result.get('artists', 0)} artis")
+            print(f"[OK] Katalog master & playlist logis berhasil dibuat!")
+            print(f"  - Total Lagu Terkatalog : {result.get('total_records', 0)}")
+            print(f"  - Playlist M3U Diekspor : {sum(result.get('playlists_stats', {}).values())} file")
         elif choice == "11":
-            import subprocess
-            clf_path = os.path.join("data", "logs", "classification_report.csv")
-            if os.path.exists(clf_path):
-                print(f"\n[INFO] Membuka laporan klasifikasi di: {clf_path}")
-                try:
-                    subprocess.Popen(["explorer", os.path.abspath(clf_path)])
-                except Exception:
-                    print(f"Path: {os.path.abspath(clf_path)}")
-            else:
-                print("[WARN] classification_report.csv belum ada. Jalankan Generate Index (menu 10) dahulu.")
+            print("\n[INFO] Menjalankan audit klasifikasi standalone...")
+            logs_dir_audit = "data/logs"
+            run_classification_audit(input_dir=input_dir, logs_dir=logs_dir_audit)
+            print("[OK] Audit klasifikasi standalone selesai!")
         elif choice == "12":
             print("\n" + "=" * 55)
             print("   PANDUAN INTEGRASI MP3TAG & MUSICBRAINZ PICARD")
@@ -150,7 +145,7 @@ def interactive_menu():
             print("\n1. Mp3tag (Untuk Edit Tag & Gambar Album Massal)")
             print("   - Unduh gratis di: https://www.mp3tag.de/en/download.html")
             print("   - Cara pakai: Buka Mp3tag, masukkan folder output:")
-            print("     'data/output/RADIO_AUDIO_LIBRARY/'")
+            print("     'data/output/RADIO_AUDIO_MASTER_LIBRARY/'")
             print("   - Blok lagu, isi Album/Genre secara massal di panel kiri.")
             print("   - Tekan Ctrl + S untuk menyimpan.")
             print("\n2. MusicBrainz Picard (Untuk Auto-Tag lewat Sidik Jari Suara)")
@@ -182,11 +177,9 @@ def main():
     # 1. Cek file konfigurasi terlebih dahulu
     if not check_config_files():
         logger.error("Gagal mendeteksi berkas konfigurasi. Hentikan eksekusi.")
-        sys.exit(2) # Exit code 2: Config error
-
-    # 2. Parsing argumen baris perintah
+        sys.exit(2) # Exit code 2: Config error    # 2. Parsing argumen baris perintah
     parser = argparse.ArgumentParser(
-        description="RADIO_MUSIC_CLEANER — Pembersihan dan penyusunan folder library audio secara aman.",
+        description="RADIO_MUSIC_CLEANER v3.0 — Pembersihan dan penyusunan folder library audio secara aman.",
         formatter_class=argparse.RawTextHelpFormatter
     )
     
@@ -194,6 +187,7 @@ def main():
     parser.add_argument("--scan", action="store_true", help="Memindai folder input dan membuat laporan metadata audio.")
     parser.add_argument("--preview", action="store_true", help="Simulasi pembersihan nama file audio (dry-run).")
     parser.add_argument("--all-safe", action="store_true", help="Menjalankan scan, preview, deteksi duplikat, & QA (tanpa menulis file fisik).")
+    parser.add_argument("--classify", action="store_true", help="Menjalankan audit klasifikasi standalone tanpa menyalin file fisik.")
     
     # Flag Operasi Apply (Menulis/Mengubah data)
     parser.add_argument("--apply-rename", action="store_true", help="Menyalin file asli dan menerapkan nama file yang bersih ke folder batch.")
@@ -201,7 +195,7 @@ def main():
     parser.add_argument("--sort", action="store_true", help="Menyortir file audio hasil bersih ke folder kategori radio akhir.")
     parser.add_argument("--duplicates", action="store_true", help="Mendeteksi duplikat dan menyalin file tersangka ke folder diduga duplikat.")
     parser.add_argument("--validate", action="store_true", help="Menjalankan audit kualitas QA pada library output final.")
-    parser.add_argument("--generate-index", action="store_true", help="Membuat index genre/artis berformat M3U & CSV dan laporan classification_report.")
+    parser.add_argument("--build-index", action="store_true", help="Membangun katalog master radio dan playlist logis M3U pointer secara dinamis.")
     
     # Flag Kontrol Tambahan
     parser.add_argument("-i", "--input-dir", type=str, default="", help="Path ke folder musik luar yang ingin dipindai langsung.")
@@ -209,20 +203,20 @@ def main():
     parser.add_argument("--batch-id", type=str, default="", help="Menentukan ID batch secara manual. Jika kosong, dibuat otomatis.")
     
     args = parser.parse_args()
-
+ 
     # 3. Tentukan ID Batch
     batch_id = args.batch_id
     if not batch_id:
         batch_id = f"BATCH_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     logger.info(f"Menggunakan ID Batch: {batch_id}")
-
+ 
     # 4. Validasi direktori input sebelum memulai
     batch_cfg = load_json_config("config/batch_settings.json", {})
     input_dir = args.input_dir if args.input_dir else batch_cfg.get("input_dir", "data/input")
     if not os.path.exists(input_dir) or not os.listdir(input_dir):
         logger.error(f"Folder input '{input_dir}' kosong atau tidak ditemukan! Tentukan path folder yang benar.")
         sys.exit(3) # Exit code 3: Input folder kosong
-
+ 
     # 5. Deteksi apakah ada operasi apply yang dijalankan
     is_apply_mode = args.apply_rename or args.write_tags or args.sort or args.duplicates
     
@@ -246,6 +240,13 @@ def main():
             
     # 6. Jalankan pipeline sesuai flag yang diaktifkan
     try:
+        # Jika hanya ingin audit klasifikasi standalone
+        if args.classify:
+            logger.info("Menjalankan audit klasifikasi standalone...")
+            run_classification_audit(input_dir=input_dir, logs_dir="data/logs")
+            logger.info("Audit klasifikasi standalone selesai!")
+            sys.exit(0)
+
         # Jika flag --all-safe aktif, jalankan semua mode aman
         if args.all_safe:
             logger.info("Menjalankan pipeline dalam mode aman (all-safe)...")
@@ -259,6 +260,7 @@ def main():
                 run_sort=False,
                 run_duplicates=True,
                 run_validate=True,
+                run_index=True,
                 resume=args.resume
             )
         else:
@@ -273,19 +275,18 @@ def main():
                 run_sort=args.sort,
                 run_duplicates=args.duplicates or args.all_safe,
                 run_validate=args.validate or args.all_safe,
+                run_index=args.build_index,
                 resume=args.resume
             )
         
-        # Langkah tambahan: generate index jika flag aktif
-        if getattr(args, 'generate_index', False):
+        # Langkah tambahan: build index jika flag aktif secara standalone
+        if getattr(args, 'build_index', False) and not args.all_safe:
             batch_cfg3 = load_json_config("config/batch_settings.json", {})
-            final_out3 = batch_cfg3.get("final_output_dir", "data/output/RADIO_AUDIO_LIBRARY")
+            final_out3 = batch_cfg3.get("final_output_dir", "data/output/RADIO_AUDIO_MASTER_LIBRARY")
             logs3 = batch_cfg3.get("logs_dir", "data/logs")
-            generate_index(
-                batch_id=batch_id,
+            build_index_catalog(
                 final_output_dir=final_out3,
-                logs_dir=logs3,
-                index_dir="data/index"
+                logs_dir=logs3
             )
             
         logger.info("Proses selesai dengan sukses!")
