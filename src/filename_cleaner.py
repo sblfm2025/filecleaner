@@ -122,13 +122,36 @@ def clean_filename(
     # 5. Hapus spasi ganda dan rapikan spasi di awal/akhir
     name_part = re.sub(r'\s+', ' ', name_part).strip()
 
-    # 6. Deteksi pola Artis - Judul
+    # 6. Inisialisasi awal variabel
     detected_artist = ""
     detected_title = ""
     
-    # Cari tanda hubung "-" yang memisahkan artis dan judul
-    # Kita batasi pemecahan pada tanda hubung pertama
-    if "-" in name_part:
+    # Deteksi berkas khusus WhatsApp
+    is_whatsapp = False
+    name_part_lower = name_part.lower()
+    
+    if "whatsapp" in name_part_lower or re.search(r'^(aud|ptt)-\d{8}-wa', name_part_lower):
+        is_whatsapp = True
+        detected_artist = "WHATSAPP"
+        
+        # Coba rapikan format berkas WA "AUD-YYYYMMDD-WAXXXX"
+        wa_match = re.search(r'^(aud|ptt)-(\d{4})(\d{2})(\d{2})-wa(\d+)', name_part_lower)
+        if wa_match:
+            prefix, year, month, day, num = wa_match.groups()
+            type_label = "Voice Note" if prefix == "ptt" else "Audio"
+            name_part = f"WhatsApp {type_label} {year}-{month}-{day} (WA{num.zfill(4)})"
+            reasons.append("Pola nama berkas WA didecode")
+        else:
+            # Rapikan format "WhatsApp Audio YYYY-MM-DD at HH.MM.SS"
+            # Hapus bagian waktu "at HH.MM.SS" atau "at HH.MM"
+            name_part_clean = re.sub(r'\s+at\s+\d{2}[\.\:\-]\d{2}([\.\:\-]\d{2})?', '', name_part, flags=re.IGNORECASE)
+            name_part = safe_title_case(name_part_clean)
+            reasons.append("Waktu berkas WA dibersihkan")
+            
+        detected_title = name_part
+        
+    # 6. Deteksi pola Artis - Judul (hanya jika bukan berkas WhatsApp)
+    elif "-" in name_part:
         parts = name_part.split("-", 1)
         artist_part = parts[0].strip()
         title_part = parts[1].strip()
