@@ -1,5 +1,8 @@
 {
-  "_comment": "Prefix kuat yang langsung menentukan folder tanpa perlu skor tambahan. Format: PREFIX (case-insensitive, diikuti spasi atau tanda hubung)",
+  "_comment": [
+    "Prefix kuat yang langsung menentukan folder tanpa perlu skor tambahan.",
+    "Format: PREFIX (case-insensitive, diikuti spasi atau tanda hubung)"
+  ],
   "radio_asset": {
     "STATIONID -": "06_MASTER_RADIO_ASSETS/01_STATION_ID",
     "STATIONID-": "06_MASTER_RADIO_ASSETS/01_STATION_ID",

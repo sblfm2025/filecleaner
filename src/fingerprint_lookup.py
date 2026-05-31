@@ -32,7 +32,7 @@ def get_acoustid_api_key() -> str:
     return (
         os.environ.get("ACOUSTID_API_KEY")
         or cfg.get("client_api_key")
-        or "8XaBELxH5O"  # Fallback default SBL-FM API key
+        or ""
     )
 
 
@@ -121,11 +121,16 @@ def lookup_acoustid(duration: float, fingerprint: str) -> Optional[Dict[str, Any
     if not fingerprint or duration <= 0:
         return None
 
+    client_key = get_acoustid_api_key()
+    if not client_key:
+        logger.warning("[ACOUSTID] API key belum dikonfigurasi. Silakan buat config/acoustid_settings.json atau set env variable ACOUSTID_API_KEY.")
+        return None
+
     url = "https://api.acoustid.org/v2/lookup"
     
     # Susun data POST (recordings+releases untuk meta lengkap)
     post_data = {
-        "client": get_acoustid_api_key(),
+        "client": client_key,
         "meta": "recordings releases",
         "duration": int(duration),
         "fingerprint": fingerprint
