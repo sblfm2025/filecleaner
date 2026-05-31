@@ -1,0 +1,157 @@
+{
+  "version": "2.0",
+  "description": "Konfigurasi Multi-Stage Confidence-Based Classifier untuk RADIO MUSIC CLEANER",
+
+  "thresholds": {
+    "auto_sort": 80,
+    "review_with_suggestion": 50
+  },
+
+  "review_subfolders": {
+    "low_confidence": "90_NEEDS_REVIEW/LOW_CONFIDENCE_MUSIC",
+    "insufficient_data": "90_NEEDS_REVIEW/INSUFFICIENT_DATA",
+    "genre_conflict": "90_NEEDS_REVIEW/GENRE_CONFLICT",
+    "ambiguous_filename": "90_NEEDS_REVIEW/AMBIGUOUS_FILENAME",
+    "possible_non_music": "90_NEEDS_REVIEW/POSSIBLE_NON_MUSIC"
+  },
+
+  "strong_prefixes": {
+    "JINGLE -": {"target_folder": "04_NON_MUSIK_SIARAN/Jingle_Station_ID", "media_type": "BROADCAST", "points": 90},
+    "SWEEPER -": {"target_folder": "04_NON_MUSIK_SIARAN/Jingle_Station_ID", "media_type": "BROADCAST", "points": 90},
+    "CALLSIGN -": {"target_folder": "04_NON_MUSIK_SIARAN/Jingle_Station_ID", "media_type": "BROADCAST", "points": 90},
+    "BUMPER -": {"target_folder": "04_NON_MUSIK_SIARAN/Bumper_Program", "media_type": "BROADCAST", "points": 90},
+    "IKLAN -": {"target_folder": "04_NON_MUSIK_SIARAN/Iklan", "media_type": "BROADCAST", "points": 90},
+    "ILM -": {"target_folder": "04_NON_MUSIK_SIARAN/ILM_Layanan_Publik", "media_type": "BROADCAST", "points": 90},
+    "INFO -": {"target_folder": "04_NON_MUSIK_SIARAN/ILM_Layanan_Publik", "media_type": "BROADCAST", "points": 90},
+    "NEWSBED -": {"target_folder": "04_NON_MUSIK_SIARAN/Newsbed_Talkshow", "media_type": "BROADCAST", "points": 90},
+    "OPENING -": {"target_folder": "04_NON_MUSIK_SIARAN/Newsbed_Talkshow", "media_type": "BROADCAST", "points": 90},
+    "CLOSING -": {"target_folder": "04_NON_MUSIK_SIARAN/Newsbed_Talkshow", "media_type": "BROADCAST", "points": 90},
+    "VOXPOP -": {"target_folder": "05_PROGRAM_REKAMAN/Wawancara", "media_type": "PROGRAM_RECORDING", "points": 90},
+    "EVENT -": {"target_folder": "04_NON_MUSIK_SIARAN/Event_Khusus", "media_type": "BROADCAST", "points": 90},
+    "WHATSAPP -": {"target_folder": "90_NEEDS_REVIEW/AMBIGUOUS_FILENAME", "media_type": "UNKNOWN", "points": 85}
+  },
+
+  "known_artists": {
+    "01_MUSIK_LOKAL_DAERAH/Bugis": ["daeng koro", "andi meriam mattalatta", "irama sukma"],
+    "01_MUSIK_LOKAL_DAERAH/Makassar": ["kila", "daeng rewa"],
+    "01_MUSIK_LOKAL_DAERAH/Artis_Lokal_Pinrang": ["pinrang"],
+    "02_MUSIK_INDONESIA/Dangdut": ["rhoma irama", "meggy z", "elvy sukaesih", "evie tamala", "didi kempot", "tasya rosmala", "via vallen", "nella kharisma", "happy asmara", "ndarboy genk", "caknan", "rita sugiarto", "camelia malik"],
+    "02_MUSIK_INDONESIA/Religi": ["opick", "maher zain", "snada", "raihan", "hadad alwi"],
+    "02_MUSIK_INDONESIA/Rock_Alternative": ["slank", "dewa 19", "sheila on 7", "jamrud", "cokelat", "kotak", "padi", "burgerkill", "j-rocks", "gigi", "boomerang", "endank soekamti", "pee wee gaskins", "superman is dead", "base jam", "power metal", "edane"],
+    "02_MUSIK_INDONESIA/Jazz_Rnb": ["tulus", "maliq", "ran", "raisa", "isyana", "andien", "ardhito", "glenn fredly", "marcell", "tompi", "yura yunita", "rio febrian", "monita tahalea", "ari lasso", "once mekel"],
+    "02_MUSIK_INDONESIA/Indie_Folk_Acoustic": ["fourtwnty", "pamungkas", "hindia", "feast", "payung teduh", "float", "danilla", "fiersa besari", "nadin amizah", "adhitia sofyan", "kunto aji", "tiara andini", "rizky febian", "bernadya", "reality club", "the overtunes", "rendy pandugo"],
+    "02_MUSIK_INDONESIA/Pop_Indonesia": ["judika", "andmesh", "afgan", "bunga citra lestari", "bcl", "rossa", "anggun", "ruth sahanaya", "sandhy sondoro", "noah", "peterpan", "d'masiv", "wali", "ungu", "st12", "geisha", "armada", "five minutes", "last child", "virgoun", "adera", "vidi aldiano"],
+    "02_MUSIK_INDONESIA/Tembang_Kenangan": ["koes plus", "panbers", "d'lloyd", "nike ardilla", "poppy mercury", "chrisye", "ebiet g", "iwan fals", "betharia sonata", "pance pondaag", "obbie messakh", "titiek puspa", "broery", "dewi yull", "deddy dores", "bing slamet", "hetty koes endang", "bob tutupoly"],
+    "02_MUSIK_INDONESIA/Lagu_Anak": ["tasya", "sherina", "joshua suherman", "cica koeswoyo", "enno lerian", "trio kwek kwek"],
+    "03_MUSIK_BARAT_INTERNASIONAL/Pop_Barat": ["taylor swift", "ed sheeran", "ariana grande", "billie eilish", "dua lipa", "harry styles", "olivia rodrigo", "post malone", "shawn mendes", "charlie puth", "sam smith", "adele", "justin bieber", "selena gomez", "lady gaga", "katy perry", "one direction", "westlife"],
+    "03_MUSIK_BARAT_INTERNASIONAL/Rock_Barat": ["metallica", "linkin park", "acdc", "nirvana", "green day", "muse", "coldplay", "bon jovi", "guns n roses", "slipknot", "avenged sevenfold", "oasis", "radiohead", "led zeppelin", "pink floyd", "queen", "rolling stones", "red hot chili peppers", "foo fighters", "dream theater"],
+    "03_MUSIK_BARAT_INTERNASIONAL/Jazz_Rnb_Barat": ["eminem", "drake", "tupac", "2pac", "snoop dogg", "jay-z", "beyonce", "rihanna", "bruno mars", "the weeknd", "kanye west", "kendrick lamar", "alicia keys", "john legend", "norah jones", "miles davis", "john coltrane", "frank sinatra", "amy winehouse", "usher"],
+    "03_MUSIK_BARAT_INTERNASIONAL/EDM_Dance": ["avicii", "david guetta", "tiesto", "marshmello", "alan walker", "calvin harris", "skrillex", "daft punk", "martin garrix", "chainsmokers", "kygo", "zedd", "afrojack", "deadmau5", "diplo", "steve aoki"],
+    "03_MUSIK_BARAT_INTERNASIONAL/KPop_JPop": ["blackpink", "bts", "twice", "newjeans", "exo", "stray kids", "seventeen", "snsd", "girls generation", "iu", "bigbang", "2ne1", "shinee", "got7", "nct", "radwimps", "yoasobi", "babymetal", "one ok rock", "ado", "kenshi yonezu"],
+    "03_MUSIK_BARAT_INTERNASIONAL/Nostalgia_Barat": ["the beatles", "michael jackson", "madonna", "elvis presley", "abba", "bee gees", "phil collins", "celine dion", "whitney houston", "mariah carey", "stevie wonder", "elton john", "david bowie", "fleetwood mac", "eagles"],
+    "03_MUSIK_BARAT_INTERNASIONAL/Acoustic_Chill": ["bon iver", "boyce avenue", "jason mraz", "jack johnson", "james blunt", "damien rice"],
+    "03_MUSIK_BARAT_INTERNASIONAL/Soundtrack": ["hans zimmer", "john williams", "ennio morricone", "howard shore", "alan silvestri"]
+  },
+
+  "genre_tag_map": {
+    "dangdut": "02_MUSIK_INDONESIA/Dangdut",
+    "koplo": "02_MUSIK_INDONESIA/Dangdut",
+    "campursari": "02_MUSIK_INDONESIA/Dangdut",
+    "pop indonesia": "02_MUSIK_INDONESIA/Pop_Indonesia",
+    "pop indo": "02_MUSIK_INDONESIA/Pop_Indonesia",
+    "indonesia pop": "02_MUSIK_INDONESIA/Pop_Indonesia",
+    "rock indonesia": "02_MUSIK_INDONESIA/Rock_Alternative",
+    "alternative indonesia": "02_MUSIK_INDONESIA/Rock_Alternative",
+    "jazz indonesia": "02_MUSIK_INDONESIA/Jazz_Rnb",
+    "rnb indonesia": "02_MUSIK_INDONESIA/Jazz_Rnb",
+    "indie indonesia": "02_MUSIK_INDONESIA/Indie_Folk_Acoustic",
+    "folk indonesia": "02_MUSIK_INDONESIA/Indie_Folk_Acoustic",
+    "nostalgia": "02_MUSIK_INDONESIA/Tembang_Kenangan",
+    "tembang kenangan": "02_MUSIK_INDONESIA/Tembang_Kenangan",
+    "lagu anak": "02_MUSIK_INDONESIA/Lagu_Anak",
+    "children": "02_MUSIK_INDONESIA/Lagu_Anak",
+    "religi": "02_MUSIK_INDONESIA/Religi",
+    "sholawat": "02_MUSIK_INDONESIA/Religi",
+    "islamic": "02_MUSIK_INDONESIA/Religi",
+    "edm": "03_MUSIK_BARAT_INTERNASIONAL/EDM_Dance",
+    "electronic": "03_MUSIK_BARAT_INTERNASIONAL/EDM_Dance",
+    "house": "03_MUSIK_BARAT_INTERNASIONAL/EDM_Dance",
+    "k-pop": "03_MUSIK_BARAT_INTERNASIONAL/KPop_JPop",
+    "kpop": "03_MUSIK_BARAT_INTERNASIONAL/KPop_JPop",
+    "j-pop": "03_MUSIK_BARAT_INTERNASIONAL/KPop_JPop",
+    "jpop": "03_MUSIK_BARAT_INTERNASIONAL/KPop_JPop",
+    "soundtrack": "03_MUSIK_BARAT_INTERNASIONAL/Soundtrack",
+    "ost": "03_MUSIK_BARAT_INTERNASIONAL/Soundtrack"
+  },
+
+  "daerah_keywords": {
+    "01_MUSIK_LOKAL_DAERAH/Bugis": ["bugis", "alosi", "ripolo", "wanua", "penrang", "marennu", "tana ogi", "wanuakku", "peddi", "deceng", "muwale", "tappamu", "subarakka", "tengngang", "bunganna", "passelle", "tenri", "jokka", "cinna", "mamase", "mappadendang"],
+    "01_MUSIK_LOKAL_DAERAH/Makassar": ["makassar", "alle mama", "tea bilal", "kelong", "paqdendang", "panrannuangku", "silariang", "anging mamiri"],
+    "01_MUSIK_LOKAL_DAERAH/Mandar": ["mandar", "lita", "pembolongan", "patuqdu", "pambusuang"],
+    "01_MUSIK_LOKAL_DAERAH/Toraja": ["toraja", "tondok", "kadandang", "madending", "passule", "toraya", "sarira"],
+    "01_MUSIK_LOKAL_DAERAH/Artis_Lokal_Pinrang": ["pinrang", "suppa", "batulappa", "duampanua"]
+  },
+
+  "ambiguous_keywords": [
+    "track", "audio", "song", "music", "sound", "file",
+    "unknown", "untitled", "no name", "noname",
+    "recording", "record", "rec",
+    "new", "baru", "terbaru",
+    "viral", "hits", "top", "best",
+    "download", "unduh", "downloaded",
+    "converted", "convert",
+    "copy", "salinan", "backup",
+    "video", "mv", "official",
+    "whatsapp", "wa", "aud-", "ptt-",
+    "test", "testing", "sample",
+    "temp", "tmp", "dummy"
+  ],
+
+  "weak_keywords_solo_forbidden": [
+    "love", "cinta", "sayang", "hati",
+    "theme", "logo", "remix", "dj",
+    "background", "instrumental", "beat",
+    "mix", "version", "ver", "edit",
+    "ft", "feat", "featuring",
+    "live", "acoustic", "cover",
+    "original", "official"
+  ],
+
+  "duration_thresholds": {
+    "jingle_max_seconds": 60,
+    "bumper_max_seconds": 30,
+    "music_min_seconds": 90,
+    "music_max_seconds": 600,
+    "program_min_seconds": 300,
+    "very_short_flag_seconds": 10
+  },
+
+  "signal_points": {
+    "PREFIX_RESMI": 90,
+    "DAERAH_KEYWORD_FILENAME": 70,
+    "DAERAH_KEYWORD_TAG": 60,
+    "ARTIST_TAG_KNOWN": 60,
+    "ARTIST_FILENAME_KNOWN": 55,
+    "GENRE_TAG_SPECIFIC": 45,
+    "CLEAN_FILENAME_PATTERN": 30,
+    "BOTH_TAG_VALID": 30,
+    "DURATION_MATCHES_TYPE": 20,
+    "LANGUAGE_DETECTION_EN": 15,
+    "LANGUAGE_DETECTION_ID": 15,
+    "PARENT_FOLDER_HINT": 15,
+    "GENRE_TAG_AMBIGUOUS": 10,
+    "KEYWORD_WEAK_ONLY": 10
+  },
+
+  "conflict_penalties": {
+    "genre_vs_artist_mismatch": 20,
+    "missing_both_tags": 25,
+    "ambiguous_artist_part": 20,
+    "duration_vs_type_mismatch": 15,
+    "parent_vs_metadata_conflict": 10
+  },
+
+  "english_stopwords": ["the", "you", "me", "i", "love", "my", "your", "it", "on", "to", "for", "with", "is", "are", "am", "was", "were", "that", "this", "have", "has", "had", "dont", "cant", "of", "in", "at", "by", "about", "we", "he", "she", "they", "them", "his", "her", "go", "come", "do", "will", "would", "should", "could", "all", "no", "yes", "not", "up", "down", "out", "so", "and", "but", "or", "if", "when", "what", "where", "how", "why", "who", "never", "always", "baby", "girl", "boy", "night", "day", "time", "life"],
+
+  "indonesian_stopwords": ["yang", "dan", "di", "ke", "dari", "untuk", "dengan", "pada", "oleh", "ini", "itu", "aku", "kamu", "dia", "mereka", "kita", "kami", "kau", "cinta", "hati", "jiwa", "rindu", "kasih", "sayang", "jangan", "bisa", "ada", "tidak", "ya", "sudah", "belum", "adalah", "akan", "juga", "lagi", "saja", "pun", "karena", "kalau", "mau", "buat", "tetap", "masih"]
+}

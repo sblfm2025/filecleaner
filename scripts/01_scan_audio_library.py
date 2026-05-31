@@ -6,7 +6,7 @@ from typing import List, Dict, Any
 from src.utils import load_json_config, setup_logger
 from src.audio_reader import read_audio_metadata
 from src.filename_cleaner import clean_filename
-from src.folder_sorter import determine_target_folder
+from src.audio_classifier import classify_audio
 from src.batch_manager import BatchManager
 from src.report_writer import write_csv_report, convert_csv_to_xlsx
 
@@ -15,9 +15,12 @@ SCAN_COLUMNS = [
     "id", "batch_id", "original_path", "filename", "extension", "file_size_mb",
     "modified_time", "duration_seconds", "duration_readable", "bitrate", "sample_rate",
     "title_tag", "artist_tag", "album_tag", "genre_tag", "year_tag",
-    "clean_filename_suggestion", "detected_artist_from_filename", 
-    "detected_title_from_filename", "suggested_folder", "status", "notes"
+    "clean_filename_suggestion", "detected_artist_from_filename",
+    "detected_title_from_filename", "parent_folder",
+    "suggested_folder", "confidence_score", "decision", "signals_summary",
+    "warnings_summary", "classifier_reason", "status", "notes"
 ]
+
 
 def scan_audio_library(
     batch_id: str,
@@ -41,6 +44,7 @@ def scan_audio_library(
     # 2. Muat konfigurasi
     cleaner_rules = load_json_config("config/cleaner_rules.json", {})
     folder_mapping = load_json_config("config/folder_mapping.json", {})
+    classifier_config = load_json_config("config/classifier_config.json", {})
     
     # 3. Inisialisasi Batch Manager
     batch_mgr = BatchManager(logs_dir)
@@ -75,14 +79,6 @@ def scan_audio_library(
             # Daftarkan file ke manifest
             record = batch_mgr.register_file(filepath, batch_id, size_mb, mtime)
             
-            # Jika resume aktif dan file sudah selesai di-scan pada sesi sebelumnya, gunakan data manifest
-            if resume and record.get("scan_status") == "SUCCESS":
-                logger.debug(f"Resume: Skip scan untuk {filepath}")
-                # Load record lama ke list hasil scan
-                # Tapi untuk menjaga data laporan terbaru, kita tetap baca ulang atau parsing
-                # Agar praktis, kita proses saja karena membaca metadata cepat jika file di lokal
-                pass
-            
             # Baca data metadata audio
             meta = read_audio_metadata(filepath)
             filename = os.path.basename(filepath)
@@ -91,16 +87,34 @@ def scan_audio_library(
             # Dapatkan folder induk relatif terhadap input_dir
             rel_path = os.path.relpath(filepath, input_dir)
             parent_folder = os.path.dirname(rel_path)
+            if parent_folder == ".":
+                parent_folder = ""
 
             # Simulasi rename & pembersihan nama file dengan menyertakan tag metadata asli
             cleaned_name, det_artist, det_title, change_reason = clean_filename(
                 filename, cleaner_rules, meta["artist_tag"], meta["title_tag"]
             )
             
-            # Tentukan usulan folder sorting dengan menyertakan parent_folder
-            suggested_folder, sort_reason = determine_target_folder(
-                cleaned_name, meta["genre_tag"], det_artist, det_title, folder_mapping, parent_folder
+            # ── KLASIFIKASI MENGGUNAKAN CLASSIFIER MULTI-STAGE ──────────────
+            clf_result = classify_audio(
+                filename=cleaned_name,
+                artist_tag=meta["artist_tag"],
+                title_tag=meta["title_tag"],
+                genre_tag=meta["genre_tag"],
+                duration_seconds=meta["duration_seconds"],
+                parent_folder=parent_folder,
+                config=classifier_config
             )
+            
+            suggested_folder = clf_result["target_folder"]
+            confidence_score = clf_result["confidence_score"]
+            decision = clf_result["decision"]
+            signals_summary = "; ".join([
+                f"{s['source']}={s['points']}" for s in clf_result["signals"]
+                if s.get("strength") != "INFO"
+            ])
+            warnings_summary = " | ".join(clf_result["warnings"]) if clf_result["warnings"] else ""
+            classifier_reason = clf_result["reason"]
             
             # Tentukan status file
             status = "OK"
@@ -117,9 +131,12 @@ def scan_audio_library(
                 if change_reason != "Nama file sudah bersih":
                     notes_list.append("Nama file kotor")
                     
-            if "90_PERLU_DICEK" in suggested_folder:
+            if decision == "NEEDS_REVIEW":
                 status = "PERLU_DICEK"
-                notes_list.append("File terdeteksi ambigu")
+                notes_list.append(f"Confidence rendah: {confidence_score:.0f}/100")
+            elif decision == "REVIEW_WITH_SUGGESTION":
+                status = "CEK_DENGAN_SARAN"
+                notes_list.append(f"Confidence sedang: {confidence_score:.0f}/100 — ada saran folder")
                 
             notes = "; ".join(notes_list) if notes_list else "Aman"
             
@@ -144,7 +161,13 @@ def scan_audio_library(
                 "clean_filename_suggestion": cleaned_name,
                 "detected_artist_from_filename": det_artist,
                 "detected_title_from_filename": det_title,
+                "parent_folder": parent_folder,
                 "suggested_folder": suggested_folder,
+                "confidence_score": confidence_score,
+                "decision": decision,
+                "signals_summary": signals_summary,
+                "warnings_summary": warnings_summary,
+                "classifier_reason": classifier_reason,
                 "status": status,
                 "notes": notes
             }

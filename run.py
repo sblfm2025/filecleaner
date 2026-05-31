@@ -8,6 +8,7 @@ from src.utils import setup_logger, load_json_config, import_module_by_path
 
 # Impor pipeline utama secara dinamis untuk menghindari syntax error nama file numerik
 run_full_pipeline = import_module_by_path("full_pipeline", "scripts/99_full_pipeline.py").run_full_pipeline
+generate_index = import_module_by_path("generate_index", "scripts/08_generate_index.py").generate_index
 
 def show_welcome_banner():
     """Menampilkan banner pembuka di terminal."""
@@ -61,11 +62,13 @@ def interactive_menu():
         print(" 7. Susun File ke Folder Kategori (Sort)        *PROSES FISIK*")
         print(" 8. Deteksi & Kumpulkan Berkas Duplikat (Duplicates)")
         print(" 9. Audit Validasi Kualitas Library Akhir (Validate)")
-        print(" 10. Panduan Finishing (Mp3tag & MusicBrainz Picard)")
-        print(" 11. Keluar")
+        print(" 10. Buat Index Genre/Artis M3U & CSV (Generate Index)")
+        print(" 11. Laporan Klasifikasi (Classification Report)")
+        print(" 12. Panduan Finishing (Mp3tag & MusicBrainz Picard)")
+        print(" 13. Keluar")
         print("=" * 55)
         
-        choice = input("Pilih menu (1-11): ").strip()
+        choice = input("Pilih menu (1-13): ").strip()
         
         if choice == "1":
             new_path = input(f"\nMasukkan path folder musik baru\n(Enter untuk batal, default: '{input_dir}'): ").strip()
@@ -116,6 +119,29 @@ def interactive_menu():
         elif choice == "9":
             run_full_pipeline(batch_id=batch_id, input_dir=input_dir, run_validate=True)
         elif choice == "10":
+            print("\n[INFO] Membuat index genre/artis M3U & CSV...")
+            batch_cfg2 = load_json_config("config/batch_settings.json", {})
+            final_out = batch_cfg2.get("final_output_dir", "data/output/RADIO_AUDIO_LIBRARY")
+            logs = batch_cfg2.get("logs_dir", "data/logs")
+            result = generate_index(
+                batch_id=batch_id,
+                final_output_dir=final_out,
+                logs_dir=logs,
+                index_dir="data/index"
+            )
+            print(f"[OK] Index selesai: {result.get('total', 0)} berkas | {result.get('genres', 0)} genre | {result.get('artists', 0)} artis")
+        elif choice == "11":
+            import subprocess
+            clf_path = os.path.join("data", "logs", "classification_report.csv")
+            if os.path.exists(clf_path):
+                print(f"\n[INFO] Membuka laporan klasifikasi di: {clf_path}")
+                try:
+                    subprocess.Popen(["explorer", os.path.abspath(clf_path)])
+                except Exception:
+                    print(f"Path: {os.path.abspath(clf_path)}")
+            else:
+                print("[WARN] classification_report.csv belum ada. Jalankan Generate Index (menu 10) dahulu.")
+        elif choice == "12":
             print("\n" + "=" * 55)
             print("   PANDUAN INTEGRASI MP3TAG & MUSICBRAINZ PICARD")
             print("=" * 55)
@@ -134,11 +160,11 @@ def interactive_menu():
             print("   - Picard akan mendengarkan suara lagu dan mencarinya di database.")
             print("   - Klik kanan album di kolom kanan -> Save (Ctrl + S).")
             print("=" * 55)
-        elif choice == "11":
+        elif choice == "13":
             print("\nTerima kasih telah menggunakan RADIO_MUSIC_CLEANER. Sampai jumpa!\n")
             break
         else:
-            print("\n[ERROR] Pilihan tidak valid. Silakan pilih nomor 1-11.")
+            print("\n[ERROR] Pilihan tidak valid. Silakan pilih nomor 1-13.")
             
         input("\nTekan ENTER untuk kembali ke Menu Utama...")
 
@@ -175,6 +201,7 @@ def main():
     parser.add_argument("--sort", action="store_true", help="Menyortir file audio hasil bersih ke folder kategori radio akhir.")
     parser.add_argument("--duplicates", action="store_true", help="Mendeteksi duplikat dan menyalin file tersangka ke folder diduga duplikat.")
     parser.add_argument("--validate", action="store_true", help="Menjalankan audit kualitas QA pada library output final.")
+    parser.add_argument("--generate-index", action="store_true", help="Membuat index genre/artis berformat M3U & CSV dan laporan classification_report.")
     
     # Flag Kontrol Tambahan
     parser.add_argument("-i", "--input-dir", type=str, default="", help="Path ke folder musik luar yang ingin dipindai langsung.")
@@ -247,6 +274,18 @@ def main():
                 run_duplicates=args.duplicates or args.all_safe,
                 run_validate=args.validate or args.all_safe,
                 resume=args.resume
+            )
+        
+        # Langkah tambahan: generate index jika flag aktif
+        if getattr(args, 'generate_index', False):
+            batch_cfg3 = load_json_config("config/batch_settings.json", {})
+            final_out3 = batch_cfg3.get("final_output_dir", "data/output/RADIO_AUDIO_LIBRARY")
+            logs3 = batch_cfg3.get("logs_dir", "data/logs")
+            generate_index(
+                batch_id=batch_id,
+                final_output_dir=final_out3,
+                logs_dir=logs3,
+                index_dir="data/index"
             )
             
         logger.info("Proses selesai dengan sukses!")
