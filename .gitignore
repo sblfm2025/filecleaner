@@ -1,0 +1,39 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+
+# Environment configurations
+.env
+
+# Windows thumbnail cache
+Thumbs.db
+ehthumbs.db
+
+# Project IDEs
+.vscode/
+.idea/
+.gemini/
+
+# Local work data (Exclude massive audio files & operator local logs)
+data/input/*
+!data/input/.gitkeep
+data/input_batch/*
+!data/input_batch/.gitkeep
+data/output/*
+!data/output/.gitkeep
+data/output_batch/*
+!data/output_batch/.gitkeep
+data/perlu_dicek/*
+!data/perlu_dicek/.gitkeep
+data/duplikat_diduga/*
+!data/duplikat_diduga/.gitkeep
+data/audio_bermasalah/*
+!data/audio_bermasalah/.gitkeep
+data/original_backup/*
+!data/original_backup/.gitkeep
+data/logs/*
+!data/logs/.gitkeep

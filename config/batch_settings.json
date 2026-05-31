@@ -1,0 +1,16 @@
+{
+  "batch_mode": true,
+  "max_batch_size_gb": 50,
+  "max_files_per_batch": 5000,
+  "dry_run_default": true,
+  "resume_enabled": true,
+  "skip_completed_files": true,
+  "copy_instead_of_move": true,
+  "allow_delete": false,
+  "allow_overwrite": false,
+  "input_dir": "data/input",
+  "input_batch_dir": "data/input_batch",
+  "output_dir": "data/output",
+  "output_batch_dir": "data/output_batch",
+  "logs_dir": "data/logs"
+}

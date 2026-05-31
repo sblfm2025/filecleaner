@@ -1,0 +1,13 @@
+{
+  "default_album": "Radio SBL Library",
+  "default_comment": "Processed by RADIO_MUSIC_CLEANER",
+  "default_genre_music": "Musik",
+  "default_genre_local": "Musik Lokal Daerah",
+  "default_genre_jingle": "Jingle",
+  "default_genre_bumper": "Bumper",
+  "default_genre_iklan": "Iklan",
+  "default_genre_ilm": "Iklan Layanan Masyarakat",
+  "default_genre_program": "Program Rekaman",
+  "default_artist_unknown": "UNKNOWN",
+  "overwrite_existing_tags": false
+}

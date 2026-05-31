@@ -1,0 +1,35 @@
+{
+  "prefix_mapping": {
+    "JINGLE -": "04_NON_MUSIK_SIARAN/Jingle_Station_ID",
+    "SWEEPER -": "04_NON_MUSIK_SIARAN/Jingle_Station_ID",
+    "CALLSIGN -": "04_NON_MUSIK_SIARAN/Jingle_Station_ID",
+    "BUMPER -": "04_NON_MUSIK_SIARAN/Bumper_Program",
+    "IKLAN -": "04_NON_MUSIK_SIARAN/Iklan",
+    "ILM -": "04_NON_MUSIK_SIARAN/ILM_Layanan_Publik",
+    "INFO -": "04_NON_MUSIK_SIARAN/ILM_Layanan_Publik",
+    "NEWSBED -": "04_NON_MUSIK_SIARAN/Newsbed_Talkshow",
+    "OPENING -": "04_NON_MUSIK_SIARAN/Newsbed_Talkshow",
+    "CLOSING -": "04_NON_MUSIK_SIARAN/Newsbed_Talkshow",
+    "VOXPOP -": "05_PROGRAM_REKAMAN/Wawancara",
+    "EVENT -": "04_NON_MUSIK_SIARAN/Event_Khusus"
+  },
+  "keyword_mapping": {
+    "bugis": "01_MUSIK_LOKAL_DAERAH/Bugis",
+    "makassar": "01_MUSIK_LOKAL_DAERAH/Makassar",
+    "mandar": "01_MUSIK_LOKAL_DAERAH/Mandar",
+    "toraja": "01_MUSIK_LOKAL_DAERAH/Toraja",
+    "pinrang": "01_MUSIK_LOKAL_DAERAH/Artis_Lokal_Pinrang",
+    "dangdut": "02_MUSIK_INDONESIA/Dangdut",
+    "koplo": "02_MUSIK_INDONESIA/Dangdut",
+    "sholawat": "02_MUSIK_INDONESIA/Religi",
+    "religi": "02_MUSIK_INDONESIA/Religi",
+    "ramadan": "04_NON_MUSIK_SIARAN/Event_Khusus",
+    "talkshow": "05_PROGRAM_REKAMAN/Talkshow",
+    "wawancara": "05_PROGRAM_REKAMAN/Wawancara",
+    "podcast": "05_PROGRAM_REKAMAN/Podcast"
+  },
+  "default_music_folder": "02_MUSIK_INDONESIA/Pop_Indonesia",
+  "needs_review_folder": "90_PERLU_DICEK",
+  "duplicate_folder": "91_DUPLIKAT_DIDUGA",
+  "bad_audio_folder": "92_AUDIO_BERMASALAH"
+}

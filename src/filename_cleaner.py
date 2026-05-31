@@ -1,0 +1,172 @@
+import os
+import re
+import logging
+from typing import Dict, Any, Tuple
+
+def safe_title_case(text: str) -> str:
+    """
+    Mengubah teks menjadi format Title Case yang cerdas dan aman untuk nama file audio.
+    Mempertahankan kata singkatan (seperti SBL, RRI, ILM, TV) tetap huruf besar,
+    dan mengecilkan kata hubung tertentu jika berada di tengah kalimat.
+    """
+    if not text:
+        return ""
+        
+    words = text.split()
+    capitalized_words = []
+    
+    # Daftar kata hubung/partikel yang sebaiknya huruf kecil jika tidak di awal/akhir
+    lowercase_words = {
+        "dan", "atau", "di", "ke", "dari", "yang", "untuk", "dengan", "pada", "oleh",
+        "vs", "feat", "ft", "by", "the", "a", "an", "and", "or", "in", "on", "at", "of", "to", "for"
+    }
+    
+    for i, word in enumerate(words):
+        word_clean = re.sub(r'[^a-zA-Z0-9]', '', word)
+        
+        # Jika kata adalah singkatan (misalnya SBL, ILM, RRI)
+        if word_clean.isupper() and len(word_clean) <= 4:
+            capitalized_words.append(word)
+        # Kata pertama dan kata terakhir selalu dikapitalisasi
+        elif i == 0 or i == len(words) - 1:
+            # Menangani kata yang diawali tanda kurung
+            if word.startswith(('(', '[', '{')):
+                capitalized_words.append(word[0] + word[1:].capitalize())
+            else:
+                capitalized_words.append(word.capitalize())
+        # Kata hubung di tengah kalimat diubah menjadi huruf kecil
+        elif word.lower() in lowercase_words:
+            capitalized_words.append(word.lower())
+        else:
+            # Kapitalisasi kata biasa, menangani tanda hubung internal seperti dangdut-koplo
+            if '-' in word:
+                parts = [p.capitalize() for p in word.split('-')]
+                capitalized_words.append('-'.join(parts))
+            elif word.startswith(('(', '[', '{')):
+                capitalized_words.append(word[0] + word[1:].capitalize())
+            else:
+                capitalized_words.append(word.capitalize())
+                
+    return " ".join(capitalized_words)
+
+def clean_filename(
+    filename: str, 
+    rules: Dict[str, Any]
+) -> Tuple[str, str, str, str]:
+    """
+    Membersihkan nama file berdasarkan aturan konfigurasi JSON.
+    Mengembalikan tuple: (new_filename_suggestion, detected_artist, detected_title, change_reason)
+    """
+    # 1. Pisahkan nama file dari ekstensi
+    name_part, ext = os.path.splitext(filename)
+    original_name_part = name_part
+    reasons = []
+    
+    # Ambil aturan dari config
+    remove_phrases = rules.get("remove_phrases", [])
+    replace_chars = rules.get("replace_chars", {})
+    remove_brackets = rules.get("remove_brackets_content_when_contains", [])
+    preserve_brackets = rules.get("preserve_brackets_content_when_contains", [])
+    forbidden_chars = rules.get("windows_forbidden_chars", ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"])
+    max_length = rules.get("max_filename_length", 180)
+
+    # 2. Ganti karakter berdasarkan replace_chars
+    replaced = False
+    for old_char, new_char in replace_chars.items():
+        if old_char in name_part:
+            name_part = name_part.replace(old_char, new_char)
+            replaced = True
+    if replaced:
+        reasons.append("Karakter khusus diganti")
+
+    # 3. Proses tanda kurung () dan []
+    brackets_removed = False
+    # regex untuk menangkap pasangan kurung biasa () dan kurung siku [] beserta isinya
+    bracket_matches = re.findall(r'([\(\[][^\)\]]*[\)\]])', name_part)
+    for match in bracket_matches:
+        # ambil isi di dalam kurung
+        content = match[1:-1].lower().strip()
+        
+        # Cek apakah mengandung frasa yang harus dihilangkan
+        should_remove = False
+        for phrase in remove_brackets:
+            if phrase in content:
+                should_remove = True
+                break
+                
+        # Cek apakah mengandung frasa yang harus dipertahankan
+        should_preserve = False
+        for phrase in preserve_brackets:
+            if phrase in content:
+                should_preserve = True
+                break
+                
+        if should_remove and not should_preserve:
+            name_part = name_part.replace(match, "")
+            brackets_removed = True
+            
+    if brackets_removed:
+        reasons.append("Isi kurung tidak penting dihapus")
+
+    # 4. Hapus frasa kotor secara case-insensitive
+    phrases_removed = False
+    for phrase in remove_phrases:
+        pattern = re.compile(re.escape(phrase), re.IGNORECASE)
+        if pattern.search(name_part):
+            name_part = pattern.sub("", name_part)
+            phrases_removed = True
+            
+    if phrases_removed:
+        reasons.append("Frasa promosi/kotor dibersihkan")
+
+    # 5. Hapus spasi ganda dan rapikan spasi di awal/akhir
+    name_part = re.sub(r'\s+', ' ', name_part).strip()
+
+    # 6. Deteksi pola Artis - Judul
+    detected_artist = ""
+    detected_title = ""
+    
+    # Cari tanda hubung "-" yang memisahkan artis dan judul
+    # Kita batasi pemecahan pada tanda hubung pertama
+    if "-" in name_part:
+        parts = name_part.split("-", 1)
+        artist_part = parts[0].strip()
+        title_part = parts[1].strip()
+        
+        # Pastikan kedua bagian tidak kosong
+        if artist_part and title_part:
+            detected_artist = safe_title_case(artist_part)
+            detected_title = safe_title_case(title_part)
+            # Gabungkan kembali secara rapi
+            name_part = f"{detected_artist} - {detected_title}"
+        else:
+            detected_title = safe_title_case(name_part)
+    else:
+        detected_title = safe_title_case(name_part)
+
+    # 7. Bersihkan sisa karakter terlarang Windows
+    forbidden_removed = False
+    for char in forbidden_chars:
+        if char in name_part:
+            name_part = name_part.replace(char, "")
+            forbidden_removed = True
+    if forbidden_removed:
+        reasons.append("Karakter terlarang Windows dihapus")
+
+    # Rapikan kembali spasi setelah penghapusan karakter
+    name_part = re.sub(r'\s+', ' ', name_part).strip()
+
+    # 8. Batasi panjang nama file
+    if len(name_part) > max_length:
+        name_part = name_part[:max_length].strip()
+        reasons.append("Panjang nama file dibatasi")
+
+    # 9. Jika hasil akhir kosong, fallback ke nama asli yang dibersihkan dari forbidden chars
+    if not name_part:
+        name_part = "Cleaned_Audio"
+        reasons.append("Fallback nama default karena hasil kosong")
+
+    new_filename = f"{name_part}{ext.lower()}"
+    change_reason = ", ".join(reasons) if reasons else "Nama file sudah bersih"
+
+    return new_filename, detected_artist, detected_title, change_reason
